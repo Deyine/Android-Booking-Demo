@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="16dp" >
+
+        <TextView
+            android:id="@+id/name"
+            style="@style/HotelItemName"
+            android:background="@drawable/border_bottom"
+            android:text="Sample Hotel"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/addressLabel"
+            style="@style/HotelItemLabel"
+            android:layout_below="@id/name"
+            android:text="Address" />
+
+        <TextView
+            android:id="@+id/address"
+            style="@style/HotelItemValue"
+            android:layout_below="@id/name"
+            android:layout_toRightOf="@id/addressLabel"
+            android:text="71 avenue de la bière" />
+
+        <TextView
+            android:id="@+id/cityLabel"
+            style="@style/HotelItemLabel"
+            android:layout_below="@id/addressLabel"
+            android:text="City" />
+
+        <TextView
+            android:id="@+id/city"
+            style="@style/HotelItemValue"
+            android:layout_below="@id/addressLabel"
+            android:layout_toRightOf="@id/cityLabel"
+            android:text="BRUGES" />
+
+        <TextView
+            android:id="@+id/stateLabel"
+            style="@style/HotelItemLabel"
+            android:layout_below="@id/cityLabel"
+            android:text="State" />
+
+        <TextView
+            android:id="@+id/state"
+            style="@style/HotelItemValue"
+            android:layout_below="@id/cityLabel"
+            android:layout_toRightOf="@id/stateLabel"
+            android:text="GA" />
+
+        <TextView
+            android:id="@+id/zipLabel"
+            style="@style/HotelItemLabel"
+            android:layout_below="@id/stateLabel"
+            android:text="ZIP" />
+
+        <TextView
+            android:id="@+id/zip"
+            style="@style/HotelItemValue"
+            android:layout_below="@id/stateLabel"
+            android:layout_toRightOf="@id/zipLabel"
+            android:text="74256" />
+
+        <TextView
+            android:id="@+id/countryLabel"
+            style="@style/HotelItemLabel"
+            android:layout_below="@id/zipLabel"
+            android:text="Country" />
+
+        <TextView
+            android:id="@+id/country"
+            style="@style/HotelItemValue"
+            android:layout_below="@id/zipLabel"
+            android:layout_toRightOf="@id/countryLabel"
+            android:text="Belgium" />
+
+        <TextView
+            android:id="@+id/priceLabel"
+            style="@style/HotelItemLabel"
+            android:layout_below="@id/countryLabel"
+            android:text="Nightly rate" />
+
+        <TextView
+            android:id="@+id/price"
+            style="@style/HotelItemValue"
+            android:layout_below="@id/countryLabel"
+            android:layout_toRightOf="@id/priceLabel"
+            android:text="129€" />
+    </RelativeLayout>
+
+</ScrollView>

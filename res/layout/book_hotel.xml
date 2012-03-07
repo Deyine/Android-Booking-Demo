@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="16dp">
+
+        <TextView
+            android:id="@+id/name"
+            style="@style/HotelItemName"
+            android:background="@drawable/border_bottom"
+            android:text="Sample Hotel"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/addressLabel"
+            style="@style/HotelItemLabel"
+            android:layout_below="@id/name"
+            android:text="Address" />
+
+        <TextView
+            android:id="@+id/address"
+            style="@style/HotelItemValue"
+            android:layout_below="@id/name"
+            android:layout_toRightOf="@id/addressLabel"
+            android:text="71 avenue de la bière" />
+
+        <TextView
+            android:id="@+id/cityLabel"
+            style="@style/HotelItemLabel"
+            android:layout_below="@id/addressLabel"
+            android:text="City" />
+
+        <TextView
+            android:id="@+id/city"
+            style="@style/HotelItemValue"
+            android:layout_below="@id/addressLabel"
+            android:layout_toRightOf="@id/cityLabel"
+            android:text="BRUGES" />
+
+        <TextView
+            android:id="@+id/stateLabel"
+            style="@style/HotelItemLabel"
+            android:layout_below="@id/cityLabel"
+            android:text="State" />
+
+        <TextView
+            android:id="@+id/state"
+            style="@style/HotelItemValue"
+            android:layout_below="@id/cityLabel"
+            android:layout_toRightOf="@id/stateLabel"
+            android:text="GA" />
+
+        <TextView
+            android:id="@+id/zipLabel"
+            style="@style/HotelItemLabel"
+            android:layout_below="@id/stateLabel"
+            android:text="ZIP" />
+
+        <TextView
+            android:id="@+id/zip"
+            style="@style/HotelItemValue"
+            android:layout_below="@id/stateLabel"
+            android:layout_toRightOf="@id/zipLabel"
+            android:text="74256" />
+
+        <TextView
+            android:id="@+id/countryLabel"
+            style="@style/HotelItemLabel"
+            android:layout_below="@id/zipLabel"
+            android:text="Country" />
+
+        <TextView
+            android:id="@+id/country"
+            style="@style/HotelItemValue"
+            android:layout_below="@id/zipLabel"
+            android:layout_toRightOf="@id/countryLabel"
+            android:text="Belgium" />
+
+        <TextView
+            android:id="@+id/priceLabel"
+            style="@style/HotelItemLabel"
+            android:layout_below="@id/countryLabel"
+            android:text="Nightly rate" />
+
+        <TextView
+            android:id="@+id/price"
+            style="@style/HotelItemValue"
+            android:layout_below="@id/countryLabel"
+            android:layout_toRightOf="@id/priceLabel"
+            android:text="129€" />
+
+        <TextView
+            android:id="@+id/checkinLabel"
+            style="@style/HotelItemLabel"
+            android:layout_below="@id/priceLabel"
+            android:text="Check in date" />
+
+        <EditText
+            android:id="@+id/checkin"
+            style="@style/HotelItemInput"
+            android:layout_below="@id/priceLabel"
+            android:layout_toRightOf="@id/checkinLabel"
+            android:inputType="date"
+            android:editable="false"
+            android:text="10/02/2012" />
+
+        <TextView
+            android:id="@+id/checkoutLabel"
+            style="@style/HotelItemLabel"
+            android:layout_below="@id/checkinLabel"
+            android:text="Check out date" />
+
+        <EditText
+            android:id="@+id/checkout"
+            style="@style/HotelItemInput"
+            android:layout_below="@id/checkinLabel"
+            android:layout_toRightOf="@id/checkoutLabel"
+            android:inputType="date"
+            android:editable="false"
+            android:text="11/02/2012" />
+
+        <TextView
+            android:id="@+id/roomPrefLabel"
+            style="@style/HotelItemLabel"
+            android:layout_below="@id/checkoutLabel"
+            android:text="Room preference" />
+
+        <Spinner
+            android:id="@+id/roomPref"
+            style="@style/HotelItemInput"
+            android:layout_below="@id/checkoutLabel"
+            android:layout_toRightOf="@id/roomPrefLabel" />
+
+        <TextView
+            android:id="@+id/smokingPrefLabel"
+            style="@style/HotelItemLabel"
+            android:layout_below="@id/roomPrefLabel"
+            android:text="Smoking preference" />
+
+        <Spinner
+            android:id="@+id/smokingPref"
+            style="@style/HotelItemInput"
+            android:layout_below="@id/roomPrefLabel"
+            android:layout_toRightOf="@id/smokingPrefLabel" />
+
+        <TextView
+            android:id="@+id/creditCardTypeLabel"
+            style="@style/HotelItemLabel"
+            android:layout_below="@id/smokingPrefLabel"
+            android:text="Credit Card Type" />
+
+        <Spinner
+            android:id="@+id/creditCardType"
+            style="@style/HotelItemInput"
+            android:layout_below="@id/smokingPrefLabel"
+            android:layout_toRightOf="@id/creditCardTypeLabel" />
+
+        <TextView
+            android:id="@+id/creditCardLabel"
+            style="@style/HotelItemLabel"
+            android:layout_below="@id/creditCardTypeLabel"
+            android:text="Credit Card" />
+
+        <EditText
+            android:id="@+id/creditCard"
+            style="@style/HotelItemInput"
+            android:layout_below="@id/creditCardTypeLabel"
+            android:layout_toRightOf="@id/creditCardLabel"
+            android:inputType="numberSigned" />
+
+        <TextView
+            android:id="@+id/creditCardNameLabel"
+            style="@style/HotelItemLabel"
+            android:layout_below="@id/creditCardLabel"
+            android:text="Credit Card Name" />
+
+        <EditText
+            android:id="@+id/creditCardName"
+            style="@style/HotelItemInput"
+            android:layout_below="@id/creditCardLabel"
+            android:layout_toRightOf="@id/creditCardNameLabel"
+            android:inputType="textCapWords" />
+    </RelativeLayout>
+
+</ScrollView>

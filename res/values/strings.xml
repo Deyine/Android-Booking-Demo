@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Hello World, MyBookings!</string>
+    <string name="app_name">BookingNative</string>
+    
+    <string name="login">Login name</string>
+    <string name="password">Password</string>
+    <string name="loginButton">Log me in</string>
+
+    <string name="alternate_title">An alternate title that is long</string>
+    <string name="toggle_title">Toggle title</string>
+
+    <string name="menu_refresh">Refresh</string>
+    <string name="menu_search">Search</string>
+    <string name="menu_share">Share</string>
+    <string name="menu_create_demo">Create demo user</string>
+    <string name="menu_logout">Logout</string>
+    <string name="menu_reset">Reset</string>
+    <string name="menu_book">Book</string>
+    
+    <string name="search_label">Search</string>
+    <string name="search_hint">type a name</string>
+    
+    <string-array name="room_preferences">
+        <item>One king-size bed</item>
+        <item>Two double beds</item>
+        <item>Three beds</item>
+    </string-array>
+    
+    <string-array name="smoking_preferences">
+        <item>Smoking</item>
+        <item>Non smoking</item>
+    </string-array>
+    
+    <string-array name="credit_card_preferences">
+        <item>VISA</item>
+        <item>Mastercard</item>
+        <item>AMEX</item>
+        <item>Discover</item>
+    </string-array>
+    
+</resources>
