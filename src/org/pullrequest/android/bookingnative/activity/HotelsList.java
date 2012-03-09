@@ -34,7 +34,7 @@ public class HotelsList extends ActionBarActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.my_bookings);
+        setContentView(R.layout.hotels);
         
         ListView hotelList = (ListView) findViewById(R.id.hotelList);
         Cursor hotelCursor = HotelDao.getInstance(this).getAll();

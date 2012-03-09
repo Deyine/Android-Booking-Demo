@@ -108,8 +108,7 @@
             android:layout_below="@id/priceLabel"
             android:layout_toRightOf="@id/checkinLabel"
             android:inputType="date"
-            android:editable="false"
-            android:text="10/02/2012" />
+            android:text="2/10/2012" />
 
         <TextView
             android:id="@+id/checkoutLabel"
@@ -123,8 +122,7 @@
             android:layout_below="@id/checkinLabel"
             android:layout_toRightOf="@id/checkoutLabel"
             android:inputType="date"
-            android:editable="false"
-            android:text="11/02/2012" />
+            android:text="2/11/2012" />
 
         <TextView
             android:id="@+id/roomPrefLabel"
@@ -187,6 +185,20 @@
             android:layout_below="@id/creditCardLabel"
             android:layout_toRightOf="@id/creditCardNameLabel"
             android:inputType="textCapWords" />
+
+        <TextView
+            android:id="@+id/creditCardExpiryDateLabel"
+            style="@style/HotelItemLabel"
+            android:layout_below="@id/creditCardNameLabel"
+            android:text="Credit Card Expiry" />
+
+        <EditText
+            android:id="@+id/creditCardExpiryDate"
+            style="@style/HotelItemInput"
+            android:layout_below="@id/creditCardNameLabel"
+            android:layout_toRightOf="@id/creditCardExpiryDateLabel"
+            android:inputType="date"
+            android:text="09/2012" />
     </RelativeLayout>
 
 </ScrollView>

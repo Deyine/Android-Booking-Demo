@@ -8,18 +8,20 @@ import org.pullrequest.android.bookingnative.domain.dao.HotelDao;
 import org.pullrequest.android.bookingnative.domain.model.Hotel;
 
 import android.app.ActionBar;
-import android.app.DatePickerDialog;
-import android.app.DatePickerDialog.OnDateSetListener;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import com.googlecode.android.widgets.DateSlider.DateSlider;
+import com.googlecode.android.widgets.DateSlider.DateSlider.OnDateSetListener;
+import com.googlecode.android.widgets.DateSlider.DefaultDateSlider;
+import com.googlecode.android.widgets.DateSlider.MonthYearDateSlider;
 
 public class BookHotel extends ActionBarActivity implements OnClickListener {
 
@@ -27,12 +29,12 @@ public class BookHotel extends ActionBarActivity implements OnClickListener {
 
 	private static final int CHECK_IN_DATE_DIALOG_ID = 0;
 	private static final int CHECK_OUT_DATE_DIALOG_ID = 1;
+	private static final int EXPIRY_DATE_DIALOG_ID = 2;
 
-	private int year;
-	private int month;
-	private int day;
+	private Calendar today;
 	private EditText checkin;
 	private EditText checkout;
+	private EditText expiryDate;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -83,11 +85,12 @@ public class BookHotel extends ActionBarActivity implements OnClickListener {
 		creditCardTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		creditCardTypePref.setAdapter(creditCardTypeAdapter);
 
+		expiryDate = (EditText) findViewById(R.id.creditCardExpiryDate);
+		expiryDate.setInputType(InputType.TYPE_NULL);
+		expiryDate.setOnClickListener(this);
+		
 		// get the current date
-		final Calendar c = Calendar.getInstance();
-		year = c.get(Calendar.YEAR);
-		month = c.get(Calendar.MONTH);
-		day = c.get(Calendar.DAY_OF_MONTH);
+		today = Calendar.getInstance();
 
 		ActionBar actionBar = getActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
@@ -99,6 +102,8 @@ public class BookHotel extends ActionBarActivity implements OnClickListener {
 			showDialog(CHECK_IN_DATE_DIALOG_ID);
 		} else if (v.getId() == R.id.checkout) {
 			showDialog(CHECK_OUT_DATE_DIALOG_ID);
+		} else if (v.getId() == R.id.creditCardExpiryDate) {
+			showDialog(EXPIRY_DATE_DIALOG_ID);
 		}
 	}
 
@@ -106,19 +111,26 @@ public class BookHotel extends ActionBarActivity implements OnClickListener {
 	protected Dialog onCreateDialog(int id) {
 		switch (id) {
 		case CHECK_IN_DATE_DIALOG_ID:
-			return new DatePickerDialog(this, new OnDateSetListener() {
+			return new DefaultDateSlider(this, new OnDateSetListener() {
 				@Override
-				public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-					checkin.setText(monthOfYear + "/" + dayOfMonth + "/" + year);
+				public void onDateSet(DateSlider view, Calendar selectedDate) {
+					checkin.setText((selectedDate.get(Calendar.MONTH) + 1) + "/" + selectedDate.get(Calendar.DAY_OF_MONTH) + "/" + selectedDate.get(Calendar.YEAR));
 				}
-			}, year, month, day);
+			}, today);
 		case CHECK_OUT_DATE_DIALOG_ID:
-			return new DatePickerDialog(this, new OnDateSetListener() {
+			return new DefaultDateSlider(this, new OnDateSetListener() {
 				@Override
-				public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-					checkout.setText(monthOfYear + "/" + dayOfMonth + "/" + year);
+				public void onDateSet(DateSlider view, Calendar selectedDate) {
+					checkout.setText((selectedDate.get(Calendar.MONTH) + 1) + "/" + selectedDate.get(Calendar.DAY_OF_MONTH) + "/" + selectedDate.get(Calendar.YEAR));
 				}
-			}, year, month, day);
+			}, today);
+		case EXPIRY_DATE_DIALOG_ID:
+			return new MonthYearDateSlider(this, new OnDateSetListener() {
+				@Override
+				public void onDateSet(DateSlider view, Calendar selectedDate) {
+					expiryDate.setText((selectedDate.get(Calendar.MONTH) + 1) + "/" + selectedDate.get(Calendar.YEAR));
+				}
+			}, today);
 		}
 		return null;
 	}
