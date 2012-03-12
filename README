@@ -1,0 +1,2 @@
+The booking demo project needs the library DateSlider : https://github.com/johanpoirier/DateSlider
+It works only with ADT 17 preview 4 : http://tools.android.com/download/adt-17-preview
