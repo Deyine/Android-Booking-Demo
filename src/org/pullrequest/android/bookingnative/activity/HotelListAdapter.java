@@ -1,6 +1,8 @@
 package org.pullrequest.android.bookingnative.activity;
 
-import org.pullrequest.android.bookingnative.domain.model.Hotel.Hotels;
+import org.pullrequest.android.bookingnative.C;
+import org.pullrequest.android.bookingnative.domain.dao.HotelDao;
+import org.pullrequest.android.bookingnative.domain.model.Hotel;
 
 import android.content.Context;
 import android.content.Intent;
@@ -25,14 +27,14 @@ public class HotelListAdapter extends SimpleCursorAdapter implements OnClickList
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View v = super.getView(position, convertView, parent);
 		v.setOnClickListener(this);
-		v.setTag(cursor.getLong(cursor.getColumnIndex(Hotels.ID)));
+		v.setTag(HotelDao.getFromCursor(cursor));
 		return v;
 	}
 
 	@Override
 	public void onClick(View v) {
 		Intent viewHotelIntent = new Intent(context, ViewHotel.class);
-		viewHotelIntent.putExtra("hotelId", (Long) v.getTag());
+		viewHotelIntent.putExtra(C.EXTRA_HOTEL_KEY, (Hotel) v.getTag());
 		context.startActivity(viewHotelIntent);
 	}
 }

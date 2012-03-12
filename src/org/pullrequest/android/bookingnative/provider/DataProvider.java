@@ -46,6 +46,10 @@ public class DataProvider extends ContentProvider {
 		hotelsProjectionMap.put(Hotels.ADDRESS, Hotels.ADDRESS);
 		hotelsProjectionMap.put(Hotels.CITY, Hotels.CITY);
 		hotelsProjectionMap.put(Hotels.ZIP, Hotels.ZIP);
+		hotelsProjectionMap.put(Hotels.STATE, Hotels.STATE);
+		hotelsProjectionMap.put(Hotels.COUNTRY, Hotels.COUNTRY);
+		hotelsProjectionMap.put(Hotels.STARS, Hotels.STARS);
+		hotelsProjectionMap.put(Hotels.PRICE, Hotels.PRICE);
 	}
 
 	@Override

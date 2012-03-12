@@ -1,8 +1,8 @@
 package org.pullrequest.android.bookingnative.activity;
 
+import org.pullrequest.android.bookingnative.C;
 import org.pullrequest.android.bookingnative.R;
 import org.pullrequest.android.bookingnative.actionbar.ActionBarActivity;
-import org.pullrequest.android.bookingnative.domain.dao.HotelDao;
 import org.pullrequest.android.bookingnative.domain.model.Hotel;
 
 import android.app.ActionBar;
@@ -20,13 +20,7 @@ public class ViewHotel extends ActionBarActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		long hotelId = getIntent().getLongExtra("hotelId", -1);
-
-		if (hotelId < 0) {
-			this.finish();
-		} else {
-			hotel = HotelDao.getInstance(this).getById(hotelId);
-		}
+		hotel = (Hotel) getIntent().getExtras().get(C.EXTRA_HOTEL_KEY);
 
 		setContentView(R.layout.view_hotel);
 		TextView name = (TextView) findViewById(R.id.name);
@@ -63,7 +57,7 @@ public class ViewHotel extends ActionBarActivity {
 			break;
 		case R.id.menu_book:
 			Intent bookIntent = new Intent(this, BookHotel.class);
-			bookIntent.putExtra("hotelId", hotel.getId());
+			bookIntent.putExtra(C.EXTRA_HOTEL_KEY, hotel);
 			startActivity(bookIntent);
 			this.finish();
 			break;

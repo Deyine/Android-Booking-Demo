@@ -18,7 +18,7 @@ public class HotelDao {
 	private Context context;
 
 	private static HotelDao instance;
-	private static String[] projection = new String[] { Hotels.ID, Hotels.NAME, Hotels.ADDRESS, Hotels.CITY, Hotels.ZIP };
+	private static String[] projection = new String[] { Hotels.ID, Hotels.NAME, Hotels.ADDRESS, Hotels.CITY, Hotels.ZIP, Hotels.STATE, Hotels.COUNTRY, Hotels.STARS, Hotels.PRICE };
 
 	public static HotelDao getInstance(Context context) {
 		if (instance == null) {
@@ -80,7 +80,7 @@ public class HotelDao {
 	}
 
 	public Cursor getAll() {
-		return context.getContentResolver().query(Hotels.CONTENT_URI, null, null, null, Hotels.NAME + " asc");
+		return context.getContentResolver().query(Hotels.CONTENT_URI, projection, null, null, Hotels.NAME + " asc");
 	}
 
 	public int removeAll() {
@@ -102,6 +102,10 @@ public class HotelDao {
 		hotel.setAddress(cursor.getString(2));
 		hotel.setCity(cursor.getString(3));
 		hotel.setZip(cursor.getString(4));
+		hotel.setState(cursor.getString(5));
+		hotel.setCountry(cursor.getString(6));
+		hotel.setStars(cursor.getInt(7));
+		hotel.setPrice(cursor.getDouble(8));
 		return hotel;
 	}
 

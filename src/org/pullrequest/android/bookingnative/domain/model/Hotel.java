@@ -1,5 +1,7 @@
 package org.pullrequest.android.bookingnative.domain.model;
 
+import java.io.Serializable;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.pullrequest.android.bookingnative.provider.DataProvider;
@@ -7,9 +9,11 @@ import org.pullrequest.android.bookingnative.provider.DataProvider;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
-public final class Hotel {
-
-    private long id;
+public final class Hotel implements Serializable {
+	
+	private static final long serialVersionUID = 5929577397946339674L;
+	
+	private long id;
     private String name;
     private String address;
     private String city;
