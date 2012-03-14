@@ -1,19 +1,32 @@
 package org.pullrequest.android.bookingnative.activity;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 import org.pullrequest.android.bookingnative.C;
+import org.pullrequest.android.bookingnative.PreferencesManager;
 import org.pullrequest.android.bookingnative.R;
 import org.pullrequest.android.bookingnative.actionbar.ActionBarActivity;
+import org.pullrequest.android.bookingnative.domain.dao.BookingDao;
+import org.pullrequest.android.bookingnative.domain.dao.UserDao;
+import org.pullrequest.android.bookingnative.domain.model.Booking;
 import org.pullrequest.android.bookingnative.domain.model.Hotel;
+import org.pullrequest.android.bookingnative.domain.model.User;
 
 import android.app.ActionBar;
 import android.app.Dialog;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -25,6 +38,8 @@ import com.googlecode.android.widgets.DateSlider.MonthYearDateSlider;
 
 public class BookHotel extends ActionBarActivity implements OnClickListener {
 
+	private PreferencesManager preferencesManager = PreferencesManager.getInstance();
+
 	protected Hotel hotel;
 
 	private static final int CHECK_IN_DATE_DIALOG_ID = 0;
@@ -34,12 +49,26 @@ public class BookHotel extends ActionBarActivity implements OnClickListener {
 	private Calendar today;
 	private EditText checkin;
 	private EditText checkout;
+	private EditText creditCardNumber;
+	private EditText creditCardName;
 	private EditText expiryDate;
+
+	private Booking currentBooking = new Booking();
+
+	private SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+	private SimpleDateFormat monthYearFormat = new SimpleDateFormat("MM/yyyy");
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
 		hotel = (Hotel) getIntent().getExtras().get(C.EXTRA_HOTEL_KEY);
+		currentBooking.setHotelId(hotel.getId());
+		User user = UserDao.getInstance(this).getByLogin(preferencesManager.getStringPref(this, PreferencesManager.PREF_LOGGED));
+		currentBooking.setUserId(user.getId());
+
+		// get the current date
+		today = Calendar.getInstance();
 
 		setContentView(R.layout.book_hotel);
 		TextView name = (TextView) findViewById(R.id.name);
@@ -60,9 +89,14 @@ public class BookHotel extends ActionBarActivity implements OnClickListener {
 		checkin = (EditText) findViewById(R.id.checkin);
 		checkin.setInputType(InputType.TYPE_NULL);
 		checkin.setOnClickListener(this);
+		checkin.setText(dateFormat.format(today.getTime()));
 		checkout = (EditText) findViewById(R.id.checkout);
 		checkout.setInputType(InputType.TYPE_NULL);
 		checkout.setOnClickListener(this);
+		checkout.setText(dateFormat.format(today.getTime()));
+
+		creditCardNumber = (EditText) findViewById(R.id.creditCard);
+		creditCardName = (EditText) findViewById(R.id.creditCardName);
 
 		Spinner roomPref = (Spinner) findViewById(R.id.roomPref);
 		ArrayAdapter<CharSequence> roomPrefAdapter = ArrayAdapter.createFromResource(this, R.array.room_preferences, android.R.layout.simple_spinner_item);
@@ -82,22 +116,39 @@ public class BookHotel extends ActionBarActivity implements OnClickListener {
 		expiryDate = (EditText) findViewById(R.id.creditCardExpiryDate);
 		expiryDate.setInputType(InputType.TYPE_NULL);
 		expiryDate.setOnClickListener(this);
-		
-		// get the current date
-		today = Calendar.getInstance();
+		expiryDate.setText(monthYearFormat.format(today.getTime()));
 
-		ActionBar actionBar = getActionBar();
-		actionBar.setDisplayHomeAsUpEnabled(true);
+		Button cancelButton = (Button) findViewById(R.id.cancelButton);
+		cancelButton.setOnClickListener(this);
+		Button proceedButton = (Button) findViewById(R.id.proceedButton);
+		proceedButton.setOnClickListener(this);
+		;
+
+		// set action bar navigation on
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			ActionBar actionBar = getActionBar();
+			actionBar.setDisplayHomeAsUpEnabled(true);
+		}
 	}
 
 	@Override
 	public void onClick(View v) {
 		if (v.getId() == R.id.checkin) {
+			checkin.setError(null);
 			showDialog(CHECK_IN_DATE_DIALOG_ID);
 		} else if (v.getId() == R.id.checkout) {
+			checkout.setError(null);
 			showDialog(CHECK_OUT_DATE_DIALOG_ID);
 		} else if (v.getId() == R.id.creditCardExpiryDate) {
+			expiryDate.setError(null);
 			showDialog(EXPIRY_DATE_DIALOG_ID);
+		} else if (v.getId() == R.id.cancelButton) {
+			this.finish();
+		} else if (v.getId() == R.id.proceedButton) {
+			if (validateBooking()) {
+				BookingDao.getInstance(this).add(currentBooking);
+				this.finish();
+			}
 		}
 	}
 
@@ -127,5 +178,110 @@ public class BookHotel extends ActionBarActivity implements OnClickListener {
 			}, today);
 		}
 		return null;
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		return super.onCreateOptionsMenu(menu);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			this.finish();
+			break;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	private boolean validateBooking() {
+		boolean valid = true;
+		clearErrors();
+
+		// checkin date
+		Date checkinDate = null;
+		try {
+			checkinDate = dateFormat.parse(checkin.getText().toString());
+			if (!checkinDate.after(new Date())) {
+				displayTextError(checkin, "Please enter a date in the future");
+				valid = false;
+			} else {
+				currentBooking.setCheckinDate(checkinDate);
+			}
+		} catch (ParseException e) {
+			Log.e(C.LOG_TAG, "", e);
+			displayTextError(checkin, "Please enter a correct date");
+			valid = false;
+		}
+
+		// checkout date
+		try {
+			Date checkoutDate = dateFormat.parse(checkout.getText().toString());
+			if (!checkoutDate.after(new Date())) {
+				displayTextError(checkout, "Please enter a date in the future");
+				valid = false;
+			} else if (!checkoutDate.after(checkinDate)) {
+				displayTextError(checkout, "Please enter a check out date after the checkin date");
+				valid = false;
+			} else {
+				currentBooking.setCheckoutDate(checkoutDate);
+			}
+		} catch (ParseException e) {
+			Log.e(C.LOG_TAG, "", e);
+			displayTextError(checkout, "Please enter a correct date");
+			valid = false;
+		}
+
+		// credit card number
+		if (creditCardNumber.getText().toString().length() < 12) {
+			displayTextError(creditCardNumber, "Please enter a valid credit card number");
+			valid = false;
+		} else {
+			currentBooking.setCreditCardNumber(creditCardNumber.getText().toString());
+		}
+
+		// credit card name
+		if (creditCardName.getText().toString().length() == 0) {
+			displayTextError(creditCardName, "Please enter a credit card name");
+			valid = false;
+		} else {
+			currentBooking.setCreditCardName(creditCardName.getText().toString());
+		}
+
+		// credit card expiry
+		try {
+			Date creditCardExpiryDate = monthYearFormat.parse(expiryDate.getText().toString());
+			if (!creditCardExpiryDate.after(new Date())) {
+				displayTextError(expiryDate, "Please enter a valid expiry date");
+				valid = false;
+			} else {
+				Calendar expiryCal = Calendar.getInstance();
+				expiryCal.setTime(creditCardExpiryDate);
+				currentBooking.setCreditCardExpiryMonth(expiryCal.get(Calendar.MONTH));
+				currentBooking.setCreditCardExpiryYear(expiryCal.get(Calendar.YEAR));
+			}
+		} catch (ParseException e) {
+			Log.e(C.LOG_TAG, "", e);
+			displayTextError(expiryDate, "Please enter a valid expiry date");
+			valid = false;
+		}
+
+		return valid;
+	}
+
+	private void clearErrors() {
+		checkin.setError(null);
+		checkout.setError(null);
+		creditCardNumber.setError(null);
+		creditCardName.setError(null);
+	}
+
+	private void displayTextError(EditText edit, String message) {
+		edit.setError(message);
 	}
 }

@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
-
+    android:layout_height="fill_parent" >
+
     <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
-        android:paddingTop="16dp">
+        android:paddingTop="16dp" >
 
         <TextView
             android:id="@+id/name"
@@ -108,7 +109,7 @@
             android:layout_below="@id/priceLabel"
             android:layout_toRightOf="@id/checkinLabel"
             android:inputType="date"
-            android:text="2/10/2012" />
+            android:text="" />
 
         <TextView
             android:id="@+id/checkoutLabel"
@@ -122,7 +123,7 @@
             android:layout_below="@id/checkinLabel"
             android:layout_toRightOf="@id/checkoutLabel"
             android:inputType="date"
-            android:text="2/11/2012" />
+            android:text="" />
 
         <TextView
             android:id="@+id/roomPrefLabel"
@@ -198,7 +199,31 @@
             android:layout_below="@id/creditCardNameLabel"
             android:layout_toRightOf="@id/creditCardExpiryDateLabel"
             android:inputType="date"
-            android:text="09/2012" />
+            android:text="" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/creditCardExpiryDateLabel"
+        android:gravity="center_horizontal"
+        android:paddingTop="16dp" >
+
+        <Button
+            android:id="@+id/cancelButton"
+            style="@android:style/Widget.CompoundButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cancel"/>
+
+        <Button
+            android:id="@+id/proceedButton"
+            style="@android:style/Widget.CompoundButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Proceed" />
+
+    </LinearLayout>
     </RelativeLayout>
 
 </ScrollView>

@@ -7,6 +7,7 @@ import org.pullrequest.android.bookingnative.domain.model.Hotel;
 
 import android.app.ActionBar;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -37,9 +38,11 @@ public class ViewHotel extends ActionBarActivity {
 		country.setText(hotel.getCountry());
 		TextView price = (TextView) findViewById(R.id.price);
 		price.setText(String.valueOf(hotel.getPrice()));
-	
-	    ActionBar actionBar = getActionBar();
-	    actionBar.setDisplayHomeAsUpEnabled(true);
+
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			ActionBar actionBar = getActionBar();
+			actionBar.setDisplayHomeAsUpEnabled(true);
+		}
 	}
 
     @Override

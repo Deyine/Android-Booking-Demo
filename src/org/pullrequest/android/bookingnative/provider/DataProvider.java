@@ -2,6 +2,7 @@ package org.pullrequest.android.bookingnative.provider;
 
 import java.util.HashMap;
 
+import org.pullrequest.android.bookingnative.domain.model.Booking.Bookings;
 import org.pullrequest.android.bookingnative.domain.model.Hotel.Hotels;
 import org.pullrequest.android.bookingnative.domain.model.User.Users;
 
@@ -19,6 +20,7 @@ public class DataProvider extends ContentProvider {
 
 	private static final int USERS = 1;
 	private static final int HOTELS = 2;
+	private static final int BOOKINGS = 3;
 
 	public static final String AUTHORITY = "org.pullrequest.android.bookingnative.provider.dataprovider";
 
@@ -27,6 +29,7 @@ public class DataProvider extends ContentProvider {
 	private DatabaseHelper databaseHelper;
 	private static HashMap<String, String> usersProjectionMap;
 	private static HashMap<String, String> hotelsProjectionMap;
+	private static HashMap<String, String> bookingsProjectionMap;
 
 	static {
 		sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -50,6 +53,21 @@ public class DataProvider extends ContentProvider {
 		hotelsProjectionMap.put(Hotels.COUNTRY, Hotels.COUNTRY);
 		hotelsProjectionMap.put(Hotels.STARS, Hotels.STARS);
 		hotelsProjectionMap.put(Hotels.PRICE, Hotels.PRICE);
+
+		sUriMatcher.addURI(AUTHORITY, DatabaseHelper.BOOKINGS_TABLE_NAME, BOOKINGS);
+		bookingsProjectionMap = new HashMap<String, String>();
+		bookingsProjectionMap.put(Bookings.ID, Bookings.ID);
+		bookingsProjectionMap.put(Bookings.USER_ID, Bookings.USER_ID);
+		bookingsProjectionMap.put(Bookings.HOTEL_ID, Bookings.HOTEL_ID);
+		bookingsProjectionMap.put(Bookings.CHECKIN_DATE, Bookings.CHECKIN_DATE);
+		bookingsProjectionMap.put(Bookings.CHECKOUT_DATE, Bookings.CHECKOUT_DATE);
+		bookingsProjectionMap.put(Bookings.CREDIT_CARD_NUMBER, Bookings.CREDIT_CARD_NUMBER);
+		bookingsProjectionMap.put(Bookings.CREDIT_CARD_TYPE, Bookings.CREDIT_CARD_TYPE);
+		bookingsProjectionMap.put(Bookings.CREDIT_CARD_NAME, Bookings.CREDIT_CARD_NAME);
+		bookingsProjectionMap.put(Bookings.CREDIT_CARD_EXPIRY_MONTH, Bookings.CREDIT_CARD_EXPIRY_MONTH);
+		bookingsProjectionMap.put(Bookings.CREDIT_CARD_EXPIRY_YEAR, Bookings.CREDIT_CARD_EXPIRY_YEAR);
+		bookingsProjectionMap.put(Bookings.SMOKING, Bookings.SMOKING);
+		bookingsProjectionMap.put(Bookings.BEDS, Bookings.BEDS);
 	}
 
 	@Override
@@ -62,6 +80,9 @@ public class DataProvider extends ContentProvider {
 			break;
 		case HOTELS:
 			count = db.delete(DatabaseHelper.HOTELS_TABLE_NAME, where, whereArgs);
+			break;
+		case BOOKINGS:
+			count = db.delete(DatabaseHelper.BOOKINGS_TABLE_NAME, where, whereArgs);
 			break;
 
 		default:
@@ -79,6 +100,8 @@ public class DataProvider extends ContentProvider {
 			return Users.CONTENT_TYPE;
 		case HOTELS:
 			return Hotels.CONTENT_TYPE;
+		case BOOKINGS:
+			return Bookings.CONTENT_TYPE;
 
 		default:
 			throw new IllegalArgumentException("Unknown URI " + uri);
@@ -112,6 +135,14 @@ public class DataProvider extends ContentProvider {
 				return noteUri;
 			}
 			break;
+		case BOOKINGS:
+			rowId = db.insert(DatabaseHelper.BOOKINGS_TABLE_NAME, Bookings.USER_ID, values);
+			if (rowId > 0) {
+				Uri noteUri = ContentUris.withAppendedId(Bookings.CONTENT_URI, rowId);
+				getContext().getContentResolver().notifyChange(noteUri, null);
+				return noteUri;
+			}
+			break;
 
 		default:
 			throw new IllegalArgumentException("Unknown URI " + uri);
@@ -139,6 +170,10 @@ public class DataProvider extends ContentProvider {
 			qb.setTables(DatabaseHelper.HOTELS_TABLE_NAME);
 			qb.setProjectionMap(hotelsProjectionMap);
 			break;
+		case BOOKINGS:
+			qb.setTables(DatabaseHelper.BOOKINGS_TABLE_NAME);
+			qb.setProjectionMap(bookingsProjectionMap);
+			break;
 
 		default:
 			throw new IllegalArgumentException("Unknown URI " + uri);
@@ -161,6 +196,9 @@ public class DataProvider extends ContentProvider {
 			break;
 		case HOTELS:
 			count = db.update(DatabaseHelper.HOTELS_TABLE_NAME, values, where, whereArgs);
+			break;
+		case BOOKINGS:
+			count = db.update(DatabaseHelper.BOOKINGS_TABLE_NAME, values, where, whereArgs);
 			break;
 
 		default:
