@@ -35,7 +35,7 @@ public class MyBookings extends SearchableActivity implements OnClickListener {
         bookingList.setAdapter(new BookingListAdapter(this, R.layout.booking_item, bookingCursor, new String[] { Bookings.CHECKIN_DATE }, new int[] { R.id.checkin }));
         
         Button hotelsButton = (Button) findViewById(R.id.buttonHotels);
-		Drawable newContentImg = getResources().getDrawable(R.drawable.ic_action_new);
+		Drawable newContentImg = getResources().getDrawable(R.drawable.ic_book_hotel);
 		newContentImg.setBounds(0, 0, newContentImg.getIntrinsicWidth(), newContentImg.getIntrinsicHeight());
         hotelsButton.setCompoundDrawables(newContentImg, null, null, null);
         hotelsButton.setOnClickListener(this);

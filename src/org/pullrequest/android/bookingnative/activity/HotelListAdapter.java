@@ -1,6 +1,7 @@
 package org.pullrequest.android.bookingnative.activity;
 
 import org.pullrequest.android.bookingnative.C;
+import org.pullrequest.android.bookingnative.R;
 import org.pullrequest.android.bookingnative.domain.dao.HotelDao;
 import org.pullrequest.android.bookingnative.domain.model.Hotel;
 
@@ -10,6 +11,7 @@ import android.database.Cursor;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.RatingBar;
 import android.widget.SimpleCursorAdapter;
 
 public class HotelListAdapter extends SimpleCursorAdapter implements OnClickListener {
@@ -27,7 +29,10 @@ public class HotelListAdapter extends SimpleCursorAdapter implements OnClickList
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View v = super.getView(position, convertView, parent);
 		v.setOnClickListener(this);
-		v.setTag(HotelDao.getFromCursor(cursor));
+		Hotel hotel = HotelDao.getFromCursor(cursor);
+		v.setTag(hotel);
+		RatingBar stars = (RatingBar) v.findViewById(R.id.stars);
+		stars.setNumStars(hotel.getStars());
 		return v;
 	}
 

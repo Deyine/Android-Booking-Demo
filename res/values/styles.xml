@@ -93,4 +93,10 @@
     <style name="HotelItemInput" parent="HotelItem">
         <item name="android:layout_width">fill_parent</item>
     </style>
+    
+    <style name="HotelStars" parent="@android:style/Widget.RatingBar">
+        <item name="android:progressDrawable">@drawable/hotel_star_full</item>
+        <item name="android:minHeight">14dip</item>
+        <item name="android:maxHeight">14dip</item>
+    </style>
 </resources>

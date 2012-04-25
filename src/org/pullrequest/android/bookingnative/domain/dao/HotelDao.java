@@ -38,6 +38,7 @@ public class HotelDao {
 		values.put(Hotels.CITY, hotel.getCity());
 		values.put(Hotels.STATE, hotel.getState());
 		values.put(Hotels.ZIP, hotel.getZip());
+		values.put(Hotels.COUNTRY, hotel.getCountry());
 		values.put(Hotels.STARS, hotel.getStars());
 		values.put(Hotels.PRICE, hotel.getPrice());
 		return context.getContentResolver().insert(Hotels.CONTENT_URI, values);
@@ -50,6 +51,7 @@ public class HotelDao {
 		values.put(Hotels.CITY, hotel.getCity());
 		values.put(Hotels.STATE, hotel.getState());
 		values.put(Hotels.ZIP, hotel.getZip());
+		values.put(Hotels.COUNTRY, hotel.getCountry());
 		values.put(Hotels.STARS, hotel.getStars());
 		values.put(Hotels.PRICE, hotel.getPrice());
 		context.getContentResolver().update(Hotels.CONTENT_URI, values, Hotels.ID + " = ?", new String[] { String.valueOf(hotel.getId()) });

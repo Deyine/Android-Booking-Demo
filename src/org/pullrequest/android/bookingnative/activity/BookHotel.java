@@ -122,7 +122,6 @@ public class BookHotel extends ActionBarActivity implements OnClickListener {
 		cancelButton.setOnClickListener(this);
 		Button proceedButton = (Button) findViewById(R.id.proceedButton);
 		proceedButton.setOnClickListener(this);
-		;
 
 		// set action bar navigation on
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {

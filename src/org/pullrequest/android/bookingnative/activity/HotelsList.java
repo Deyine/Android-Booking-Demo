@@ -4,7 +4,6 @@ import java.net.URI;
 
 import org.json.JSONArray;
 import org.pullrequest.android.bookingnative.C;
-import org.pullrequest.android.bookingnative.PreferencesManager;
 import org.pullrequest.android.bookingnative.R;
 import org.pullrequest.android.bookingnative.domain.dao.HotelDao;
 import org.pullrequest.android.bookingnative.domain.model.Hotel.Hotels;
@@ -28,23 +27,32 @@ import android.widget.Toast;
 
 public class HotelsList extends SearchableActivity {
 
+	private Cursor hotelCursor;
+	private ListView hotelList;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.hotels);
 
-		ListView hotelList = (ListView) findViewById(R.id.hotelList);
-		Cursor hotelCursor = HotelDao.getInstance(this).getAll();
-		startManagingCursor(hotelCursor);
-		hotelList.setAdapter(new HotelListAdapter(this, R.layout.hotel_item, hotelCursor, new String[] { Hotels.NAME, Hotels.ADDRESS, Hotels.CITY, Hotels.ZIP }, new int[] { R.id.name, R.id.address, R.id.city, R.id.zip }));
-
 		// get hotels list
+		hotelList = (ListView) findViewById(R.id.hotelList);
+		hotelList.setEmptyView(findViewById(R.id.hotels_empty));
+		hotelList.setAdapter(null);
 		new GetHotelsTask().execute();
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 			ActionBar actionBar = getActionBar();
 			actionBar.setDisplayHomeAsUpEnabled(true);
 		}
+	}
+
+	@Override
+	protected void onResume() {
+		// update hotels list
+		new GetRemoteHotelsTask().execute();
+
+		super.onResume();
 	}
 
 	@Override
@@ -68,12 +76,6 @@ public class HotelsList extends SearchableActivity {
 		case R.id.menu_search:
 			onSearchRequested();
 			break;
-
-		case R.id.menu_logout:
-			PreferencesManager.getInstance().removePref(HotelsList.this, PreferencesManager.PREF_LOGGED);
-			HotelsList.this.finish();
-			HotelsList.this.startActivity(new Intent(HotelsList.this, HotelsList.class));
-			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -101,7 +103,7 @@ public class HotelsList extends SearchableActivity {
 		}
 	}
 
-	private class GetHotelsTask extends AsyncTask<String, Void, String> {
+	private class GetRemoteHotelsTask extends AsyncTask<String, Void, String> {
 
 		@Override
 		protected String doInBackground(String... params) {
@@ -132,6 +134,29 @@ public class HotelsList extends SearchableActivity {
 			if (status.equalsIgnoreCase("ko")) {
 				Toast.makeText(HotelsList.this, "get hotels failed", Toast.LENGTH_LONG).show();
 			}
+		}
+	}
+
+	private class GetHotelsTask extends AsyncTask<String, Void, Boolean> {
+
+		@Override
+		protected Boolean doInBackground(String... params) {
+			hotelCursor = HotelDao.getInstance(HotelsList.this).getAll();
+			startManagingCursor(hotelCursor);
+			return true;
+		}
+
+
+		@Override
+		protected void onPreExecute() {
+			getActionBarHelper().setRefreshActionItemState(true);
+			super.onPreExecute();
+		}
+		
+		@Override
+		protected void onPostExecute(Boolean status) {
+			getActionBarHelper().setRefreshActionItemState(false);
+			hotelList.setAdapter(new HotelListAdapter(HotelsList.this, R.layout.hotel_item, hotelCursor, new String[] { Hotels.NAME, Hotels.ADDRESS, Hotels.CITY, Hotels.ZIP }, new int[] { R.id.name, R.id.address, R.id.city, R.id.zip }));
 		}
 	}
 }

@@ -5,7 +5,7 @@
 
     <TextView
         android:id="@+id/name"
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
     	android:layout_height="wrap_content"
     	android:padding="3dip"
     	android:text="Sample hotel"
@@ -20,12 +20,21 @@
     	android:text="123 rue de la paix" />
 
     <TextView
+        android:id="@+id/comma"
+        android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+        android:paddingTop="3dip"
+        android:layout_below="@id/name"
+        android:layout_toRightOf="@id/address"
+    	android:text=", " />
+
+    <TextView
         android:id="@+id/zip"
         android:layout_width="wrap_content"
     	android:layout_height="wrap_content"
         android:padding="3dip"
         android:layout_below="@id/name"
-        android:layout_toRightOf="@id/address"
+        android:layout_toRightOf="@id/comma"
     	android:text="75001" />
 
     <TextView
@@ -36,5 +45,17 @@
         android:layout_below="@id/name"
         android:layout_toRightOf="@id/zip"
     	android:text="PARIS" />
+
+    <RatingBar
+        android:id="@+id/stars"
+        style="@style/HotelStars"
+        android:isIndicator="true"
+        android:numStars="5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="3dip"
+        android:layout_marginRight="3dip"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"/>
 
 </RelativeLayout>
