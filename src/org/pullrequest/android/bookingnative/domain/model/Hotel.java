@@ -2,37 +2,51 @@ package org.pullrequest.android.bookingnative.domain.model;
 
 import java.io.Serializable;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.pullrequest.android.bookingnative.domain.dao.impl.HotelDaoImpl;
 import org.pullrequest.android.bookingnative.provider.DataProvider;
 
 import android.net.Uri;
 import android.provider.BaseColumns;
 
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
+
+@DatabaseTable(daoClass = HotelDaoImpl.class, tableName = Hotel.TABLE_NAME)
 public final class Hotel implements Serializable {
+
+	private static final long serialVersionUID = -4682119973261761774L;
+
+	public static final String TABLE_NAME = "hotels";
 	
-	private static final long serialVersionUID = 5929577397946339674L;
-	
+	@DatabaseField(generatedId = true, columnName = Hotels.ID)
 	private long id;
+	
+	@DatabaseField(columnName = Hotels.NAME)
     private String name;
+	
+	@DatabaseField(columnName = Hotels.ADDRESS)
     private String address;
+	
+	@DatabaseField(columnName = Hotels.CITY)
     private String city;
+	
+	@DatabaseField(columnName = Hotels.STATE)
     private String state;
+	
+	@DatabaseField(columnName = Hotels.ZIP)
     private String zip;
+	
+	@DatabaseField(columnName = Hotels.COUNTRY)
     private String country;
+	
+	@DatabaseField(columnName = Hotels.STARS)
     private int stars;
+	
+	@DatabaseField(columnName = Hotels.PRICE)
     private double price;
 
 	public Hotel() {
 
-	}
-
-	public Hotel(JSONObject json) {
-		try {
-			this.id = json.getLong(Hotels.ID);
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
 	}
 
 	public long getId() {

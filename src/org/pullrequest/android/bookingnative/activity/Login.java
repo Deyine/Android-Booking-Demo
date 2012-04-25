@@ -1,17 +1,19 @@
 package org.pullrequest.android.bookingnative.activity;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.pullrequest.android.bookingnative.C;
 import org.pullrequest.android.bookingnative.PreferencesManager;
 import org.pullrequest.android.bookingnative.R;
+import org.pullrequest.android.bookingnative.domain.DatabaseHelper;
 import org.pullrequest.android.bookingnative.domain.dao.UserDao;
 import org.pullrequest.android.bookingnative.domain.model.User;
-import org.pullrequest.android.bookingnative.provider.DatabaseHelper;
 
-import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -22,8 +24,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-public class Login extends Activity implements OnClickListener {
+import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
 
+public class Login extends OrmLiteBaseActivity<DatabaseHelper> implements OnClickListener {
+
+	private UserDao userDao;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -32,6 +38,8 @@ public class Login extends Activity implements OnClickListener {
 
 		Button loginButton = (Button) findViewById(R.id.loginButton);
 		loginButton.setOnClickListener(this);
+		
+		userDao = getHelper().getUserDao();
 	}
 
 	@Override
@@ -48,7 +56,7 @@ public class Login extends Activity implements OnClickListener {
 			Map<String, String> loginParams = new HashMap<String, String>();
 			loginParams.put("login", params[0]);
 			loginParams.put("password", params[1]);
-			User user = UserDao.getInstance(Login.this).getByLogin(params[0]);
+			User user = userDao.findByLogin(params[0]);
 			return (user != null) ? user.getLogin() : "ko";
 		}
 
@@ -75,7 +83,7 @@ public class Login extends Activity implements OnClickListener {
 	
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.debug_menu, menu);
+		inflater.inflate(R.menu.debug, menu);
 		return true;
 	}
 
@@ -87,12 +95,15 @@ public class Login extends Activity implements OnClickListener {
 			demoUser.setPassword("demo");
 			demoUser.setFirstName("John");
 			demoUser.setLastName("Travis");
-			UserDao.getInstance(Login.this).add(demoUser);
+			try {
+				userDao.create(demoUser);
+			} catch (SQLException e) {
+				Log.w(C.LOG_TAG, "Problem during demo user creation", e);
+			}
 			return true;
 
 		case R.id.menu_reset:
-			DatabaseHelper helper = new DatabaseHelper(this);
-			helper.reset();
+			// TODO : reset bdd
 			return true;
 		}
 		return false;

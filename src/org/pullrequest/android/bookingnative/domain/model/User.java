@@ -1,41 +1,47 @@
 package org.pullrequest.android.bookingnative.domain.model;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import java.io.Serializable;
+
+import org.pullrequest.android.bookingnative.domain.dao.impl.UserDaoImpl;
 import org.pullrequest.android.bookingnative.provider.DataProvider;
 
 import android.net.Uri;
 import android.provider.BaseColumns;
 
-public final class User {
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
 
-	private int id;
+@DatabaseTable(daoClass = UserDaoImpl.class, tableName = User.TABLE_NAME)
+public final class User implements Serializable {
+
+	private static final long serialVersionUID = -3366808703621227882L;
+
+	public static final String TABLE_NAME = "users";
+	
+	@DatabaseField(generatedId = true, columnName = Users.ID)
+	private long id;
+	
+	@DatabaseField(columnName = Users.FIRST_NAME)
 	private String firstName;
+	
+	@DatabaseField(columnName = Users.LAST_NAME)
 	private String lastName;
+	
+	@DatabaseField(columnName = Users.LOGIN)
 	private String login;
+	
+	@DatabaseField(columnName = Users.PASSWORD)
 	private String password;
 
 	public User() {
 
 	}
 
-	public User(JSONObject json) {
-		try {
-			this.id = json.getInt(Users.ID);
-			this.firstName = json.getString(Users.FIRST_NAME);
-			this.lastName = json.getString(Users.LAST_NAME);
-			this.login = json.getString(Users.LOGIN);
-			this.password = json.getString(Users.PASSWORD);
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 

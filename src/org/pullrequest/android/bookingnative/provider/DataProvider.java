@@ -2,8 +2,12 @@ package org.pullrequest.android.bookingnative.provider;
 
 import java.util.HashMap;
 
+import org.pullrequest.android.bookingnative.domain.DatabaseHelper;
+import org.pullrequest.android.bookingnative.domain.model.Booking;
 import org.pullrequest.android.bookingnative.domain.model.Booking.Bookings;
+import org.pullrequest.android.bookingnative.domain.model.Hotel;
 import org.pullrequest.android.bookingnative.domain.model.Hotel.Hotels;
+import org.pullrequest.android.bookingnative.domain.model.User;
 import org.pullrequest.android.bookingnative.domain.model.User.Users;
 
 import android.content.ContentProvider;
@@ -34,7 +38,7 @@ public class DataProvider extends ContentProvider {
 	static {
 		sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
-		sUriMatcher.addURI(AUTHORITY, DatabaseHelper.USERS_TABLE_NAME, USERS);
+		sUriMatcher.addURI(AUTHORITY, User.TABLE_NAME, USERS);
 		usersProjectionMap = new HashMap<String, String>();
 		usersProjectionMap.put(Users.ID, Users.ID);
 		usersProjectionMap.put(Users.FIRST_NAME, Users.FIRST_NAME);
@@ -42,7 +46,7 @@ public class DataProvider extends ContentProvider {
 		usersProjectionMap.put(Users.LOGIN, Users.LOGIN);
 		usersProjectionMap.put(Users.PASSWORD, Users.PASSWORD);
 
-		sUriMatcher.addURI(AUTHORITY, DatabaseHelper.HOTELS_TABLE_NAME, HOTELS);
+		sUriMatcher.addURI(AUTHORITY, Hotel.TABLE_NAME, HOTELS);
 		hotelsProjectionMap = new HashMap<String, String>();
 		hotelsProjectionMap.put(Hotels.ID, Hotels.ID);
 		hotelsProjectionMap.put(Hotels.NAME, Hotels.NAME);
@@ -54,7 +58,7 @@ public class DataProvider extends ContentProvider {
 		hotelsProjectionMap.put(Hotels.STARS, Hotels.STARS);
 		hotelsProjectionMap.put(Hotels.PRICE, Hotels.PRICE);
 
-		sUriMatcher.addURI(AUTHORITY, DatabaseHelper.BOOKINGS_TABLE_NAME, BOOKINGS);
+		sUriMatcher.addURI(AUTHORITY, Booking.TABLE_NAME, BOOKINGS);
 		bookingsProjectionMap = new HashMap<String, String>();
 		bookingsProjectionMap.put(Bookings.ID, Bookings.ID);
 		bookingsProjectionMap.put(Bookings.USER_ID, Bookings.USER_ID);
@@ -76,13 +80,13 @@ public class DataProvider extends ContentProvider {
 		int count;
 		switch (sUriMatcher.match(uri)) {
 		case USERS:
-			count = db.delete(DatabaseHelper.USERS_TABLE_NAME, where, whereArgs);
+			count = db.delete(User.TABLE_NAME, where, whereArgs);
 			break;
 		case HOTELS:
-			count = db.delete(DatabaseHelper.HOTELS_TABLE_NAME, where, whereArgs);
+			count = db.delete(Hotel.TABLE_NAME, where, whereArgs);
 			break;
 		case BOOKINGS:
-			count = db.delete(DatabaseHelper.BOOKINGS_TABLE_NAME, where, whereArgs);
+			count = db.delete(Booking.TABLE_NAME, where, whereArgs);
 			break;
 
 		default:
@@ -120,7 +124,7 @@ public class DataProvider extends ContentProvider {
 		SQLiteDatabase db = databaseHelper.getWritableDatabase();
 		switch (sUriMatcher.match(uri)) {
 		case USERS:
-			long rowId = db.insert(DatabaseHelper.USERS_TABLE_NAME, Users.LOGIN, values);
+			long rowId = db.insert(User.TABLE_NAME, Users.LOGIN, values);
 			if (rowId > 0) {
 				Uri noteUri = ContentUris.withAppendedId(Users.CONTENT_URI, rowId);
 				getContext().getContentResolver().notifyChange(noteUri, null);
@@ -128,7 +132,7 @@ public class DataProvider extends ContentProvider {
 			}
 			break;
 		case HOTELS:
-			rowId = db.insert(DatabaseHelper.HOTELS_TABLE_NAME, Hotels.NAME, values);
+			rowId = db.insert(Hotel.TABLE_NAME, Hotels.NAME, values);
 			if (rowId > 0) {
 				Uri noteUri = ContentUris.withAppendedId(Hotels.CONTENT_URI, rowId);
 				getContext().getContentResolver().notifyChange(noteUri, null);
@@ -136,7 +140,7 @@ public class DataProvider extends ContentProvider {
 			}
 			break;
 		case BOOKINGS:
-			rowId = db.insert(DatabaseHelper.BOOKINGS_TABLE_NAME, Bookings.USER_ID, values);
+			rowId = db.insert(Booking.TABLE_NAME, Bookings.USER_ID, values);
 			if (rowId > 0) {
 				Uri noteUri = ContentUris.withAppendedId(Bookings.CONTENT_URI, rowId);
 				getContext().getContentResolver().notifyChange(noteUri, null);
@@ -163,15 +167,15 @@ public class DataProvider extends ContentProvider {
 
 		switch (sUriMatcher.match(uri)) {
 		case USERS:
-			qb.setTables(DatabaseHelper.USERS_TABLE_NAME);
+			qb.setTables(User.TABLE_NAME);
 			qb.setProjectionMap(usersProjectionMap);
 			break;
 		case HOTELS:
-			qb.setTables(DatabaseHelper.HOTELS_TABLE_NAME);
+			qb.setTables(Hotel.TABLE_NAME);
 			qb.setProjectionMap(hotelsProjectionMap);
 			break;
 		case BOOKINGS:
-			qb.setTables(DatabaseHelper.BOOKINGS_TABLE_NAME);
+			qb.setTables(Booking.TABLE_NAME);
 			qb.setProjectionMap(bookingsProjectionMap);
 			break;
 
@@ -192,13 +196,13 @@ public class DataProvider extends ContentProvider {
 		int count;
 		switch (sUriMatcher.match(uri)) {
 		case USERS:
-			count = db.update(DatabaseHelper.USERS_TABLE_NAME, values, where, whereArgs);
+			count = db.update(User.TABLE_NAME, values, where, whereArgs);
 			break;
 		case HOTELS:
-			count = db.update(DatabaseHelper.HOTELS_TABLE_NAME, values, where, whereArgs);
+			count = db.update(Hotel.TABLE_NAME, values, where, whereArgs);
 			break;
 		case BOOKINGS:
-			count = db.update(DatabaseHelper.BOOKINGS_TABLE_NAME, values, where, whereArgs);
+			count = db.update(Booking.TABLE_NAME, values, where, whereArgs);
 			break;
 
 		default:

@@ -38,4 +38,5 @@
         <item>Discover</item>
     </string-array>
     
+    <string name="open_helper_classname">org.pullrequest.android.bookingnative.domain.DatabaseHelper</string>
 </resources>

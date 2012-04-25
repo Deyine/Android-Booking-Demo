@@ -2,7 +2,7 @@ package org.pullrequest.android.bookingnative.activity;
 
 import org.pullrequest.android.bookingnative.C;
 import org.pullrequest.android.bookingnative.R;
-import org.pullrequest.android.bookingnative.domain.dao.HotelDao;
+import org.pullrequest.android.bookingnative.domain.dao.impl.HotelDaoImpl;
 import org.pullrequest.android.bookingnative.domain.model.Hotel;
 
 import android.content.Context;
@@ -29,7 +29,7 @@ public class HotelListAdapter extends SimpleCursorAdapter implements OnClickList
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View v = super.getView(position, convertView, parent);
 		v.setOnClickListener(this);
-		Hotel hotel = HotelDao.getFromCursor(cursor);
+		Hotel hotel = HotelDaoImpl.getFromCursor(cursor);
 		v.setTag(hotel);
 		RatingBar stars = (RatingBar) v.findViewById(R.id.stars);
 		stars.setNumStars(hotel.getStars());

@@ -1,5 +1,6 @@
 package org.pullrequest.android.bookingnative.activity;
 
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -9,11 +10,11 @@ import org.pullrequest.android.bookingnative.C;
 import org.pullrequest.android.bookingnative.PreferencesManager;
 import org.pullrequest.android.bookingnative.R;
 import org.pullrequest.android.bookingnative.actionbar.ActionBarActivity;
-import org.pullrequest.android.bookingnative.domain.dao.BookingDao;
-import org.pullrequest.android.bookingnative.domain.dao.UserDao;
+import org.pullrequest.android.bookingnative.domain.DatabaseHelper;
 import org.pullrequest.android.bookingnative.domain.model.Booking;
 import org.pullrequest.android.bookingnative.domain.model.Hotel;
 import org.pullrequest.android.bookingnative.domain.model.User;
+import org.pullrequest.android.bookingnative.domain.model.User.Users;
 
 import android.app.ActionBar;
 import android.app.Dialog;
@@ -64,7 +65,16 @@ public class BookHotel extends ActionBarActivity implements OnClickListener {
 
 		hotel = (Hotel) getIntent().getExtras().get(C.EXTRA_HOTEL_KEY);
 		currentBooking.setHotelId(hotel.getId());
-		User user = UserDao.getInstance(this).getByLogin(preferencesManager.getStringPref(this, PreferencesManager.PREF_LOGGED));
+		DatabaseHelper databaseHelper = new DatabaseHelper(this);
+		String login = preferencesManager.getStringPref(this, PreferencesManager.PREF_LOGGED);
+		User user = null;
+		try {
+			user = databaseHelper.getUserDao().queryForEq(Users.LOGIN, login).get(0);
+		} catch (SQLException e) {
+			Log.d(C.LOG_TAG, "Can't find user " + login, e);
+			this.finish();
+			return;
+		}
 		currentBooking.setUserId(user.getId());
 
 		// get the current date
@@ -145,7 +155,11 @@ public class BookHotel extends ActionBarActivity implements OnClickListener {
 			this.finish();
 		} else if (v.getId() == R.id.proceedButton) {
 			if (validateBooking()) {
-				BookingDao.getInstance(this).add(currentBooking);
+				try {
+					getHelper().getBookingDao().create(currentBooking);
+				} catch (SQLException e) {
+					Log.e(C.LOG_TAG, "Problem during hotel booking", e);
+				}
 				this.finish();
 			}
 		}

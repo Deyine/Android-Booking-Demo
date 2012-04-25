@@ -1,10 +1,10 @@
 package org.pullrequest.android.bookingnative.activity;
 
+import java.sql.SQLException;
+
 import org.pullrequest.android.bookingnative.PreferencesManager;
 import org.pullrequest.android.bookingnative.R;
-import org.pullrequest.android.bookingnative.domain.dao.BookingDao;
 import org.pullrequest.android.bookingnative.domain.model.Booking.Bookings;
-import org.pullrequest.android.bookingnative.provider.DatabaseHelper;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -30,9 +30,14 @@ public class MyBookings extends SearchableActivity implements OnClickListener {
         setContentView(R.layout.my_bookings);
         setTitle("My bookings");
         ListView bookingList = (ListView) findViewById(R.id.bookingList);
-        Cursor bookingCursor = BookingDao.getInstance(this).getAll();
-        startManagingCursor(bookingCursor);
-        bookingList.setAdapter(new BookingListAdapter(this, R.layout.booking_item, bookingCursor, new String[] { Bookings.CHECKIN_DATE }, new int[] { R.id.checkin }));
+
+        try {
+			Cursor bookingCursor = getHelper().getBookingDao().findAll();
+			startManagingCursor(bookingCursor);
+			bookingList.setAdapter(new BookingListAdapter(this, R.layout.booking_item, bookingCursor, new String[] { Bookings.CHECKIN_DATE }, new int[] { R.id.checkin }));
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
         
         Button hotelsButton = (Button) findViewById(R.id.buttonHotels);
 		Drawable newContentImg = getResources().getDrawable(R.drawable.ic_book_hotel);
@@ -71,12 +76,6 @@ public class MyBookings extends SearchableActivity implements OnClickListener {
     			return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-    
-    @Override
-    protected void onStop() {
-    	new DatabaseHelper(this).close();
-    	super.onStop();
     }
 
 	@Override

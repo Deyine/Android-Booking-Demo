@@ -1,0 +1,131 @@
+#
+# generated on 2012/04/25 04:00:28
+#
+# --table-start--
+dataClass=org.pullrequest.android.bookingnative.domain.model.Hotel
+tableName=hotels
+# --table-fields-start--
+# --field-start--
+fieldName=id
+columnName=_id
+generatedId=true
+# --field-end--
+# --field-start--
+fieldName=name
+columnName=name
+# --field-end--
+# --field-start--
+fieldName=address
+columnName=address
+# --field-end--
+# --field-start--
+fieldName=city
+columnName=city
+# --field-end--
+# --field-start--
+fieldName=state
+columnName=state
+# --field-end--
+# --field-start--
+fieldName=zip
+columnName=zip
+# --field-end--
+# --field-start--
+fieldName=country
+columnName=country
+# --field-end--
+# --field-start--
+fieldName=stars
+columnName=stars
+# --field-end--
+# --field-start--
+fieldName=price
+columnName=price
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
+# --table-start--
+dataClass=org.pullrequest.android.bookingnative.domain.model.User
+tableName=users
+# --table-fields-start--
+# --field-start--
+fieldName=id
+columnName=id
+generatedId=true
+# --field-end--
+# --field-start--
+fieldName=firstName
+columnName=first_name
+# --field-end--
+# --field-start--
+fieldName=lastName
+columnName=last_name
+# --field-end--
+# --field-start--
+fieldName=login
+columnName=login
+# --field-end--
+# --field-start--
+fieldName=password
+columnName=password
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
+# --table-start--
+dataClass=org.pullrequest.android.bookingnative.domain.model.Booking
+tableName=bookings
+# --table-fields-start--
+# --field-start--
+fieldName=_id
+columnName=_id
+generatedId=true
+# --field-end--
+# --field-start--
+fieldName=userId
+columnName=user_id
+# --field-end--
+# --field-start--
+fieldName=hotelId
+columnName=hotel_id
+# --field-end--
+# --field-start--
+fieldName=checkinDate
+columnName=checkinDate
+# --field-end--
+# --field-start--
+fieldName=checkoutDate
+columnName=checkoutDate
+# --field-end--
+# --field-start--
+fieldName=creditCardNumber
+columnName=creditCardNumber
+# --field-end--
+# --field-start--
+fieldName=creditCardType
+columnName=creditCardType
+# --field-end--
+# --field-start--
+fieldName=creditCardName
+columnName=creditCardName
+# --field-end--
+# --field-start--
+fieldName=creditCardExpiryMonth
+columnName=creditCardExpiryMonth
+# --field-end--
+# --field-start--
+fieldName=creditCardExpiryYear
+columnName=creditCardExpiryYear
+# --field-end--
+# --field-start--
+fieldName=smoking
+columnName=smoking
+# --field-end--
+# --field-start--
+fieldName=beds
+columnName=beds
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################

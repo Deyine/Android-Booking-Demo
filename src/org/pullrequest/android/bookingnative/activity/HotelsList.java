@@ -1,6 +1,7 @@
 package org.pullrequest.android.bookingnative.activity;
 
 import java.net.URI;
+import java.sql.SQLException;
 
 import org.json.JSONArray;
 import org.pullrequest.android.bookingnative.C;
@@ -9,7 +10,6 @@ import org.pullrequest.android.bookingnative.domain.dao.HotelDao;
 import org.pullrequest.android.bookingnative.domain.model.Hotel.Hotels;
 import org.pullrequest.android.bookingnative.network.RequestService;
 import org.pullrequest.android.bookingnative.network.Response;
-import org.pullrequest.android.bookingnative.provider.DatabaseHelper;
 
 import android.app.ActionBar;
 import android.app.SearchManager;
@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 public class HotelsList extends SearchableActivity {
 
+	private HotelDao hotelDao;
 	private Cursor hotelCursor;
 	private ListView hotelList;
 
@@ -36,6 +37,7 @@ public class HotelsList extends SearchableActivity {
 		setContentView(R.layout.hotels);
 
 		// get hotels list
+		hotelDao = getHelper().getHotelDao();
 		hotelList = (ListView) findViewById(R.id.hotelList);
 		hotelList.setEmptyView(findViewById(R.id.hotels_empty));
 		hotelList.setAdapter(null);
@@ -81,12 +83,6 @@ public class HotelsList extends SearchableActivity {
 	}
 
 	@Override
-	protected void onStop() {
-		new DatabaseHelper(this).close();
-		super.onStop();
-	}
-
-	@Override
 	protected void onNewIntent(Intent intent) {
 		setIntent(intent);
 		handleIntent(intent);
@@ -112,7 +108,7 @@ public class HotelsList extends SearchableActivity {
 				hotelsResponse = RequestService.getInstance().get(new URI(C.SERVER_URL + "/api/hotels"));
 				if (hotelsResponse.getCode() == 200) {
 					JSONArray jsonHotels = new JSONArray(hotelsResponse.getJsonData());
-					if (!HotelDao.getInstance(HotelsList.this).updateList(jsonHotels)) {
+					if (!hotelDao.updateList(jsonHotels)) {
 						return "ko";
 					}
 				}
@@ -141,8 +137,13 @@ public class HotelsList extends SearchableActivity {
 
 		@Override
 		protected Boolean doInBackground(String... params) {
-			hotelCursor = HotelDao.getInstance(HotelsList.this).getAll();
-			startManagingCursor(hotelCursor);
+			try {
+				hotelCursor = hotelDao.findAll();
+				startManagingCursor(hotelCursor);
+			} catch (SQLException e) {
+				Log.e(C.LOG_TAG, "Problem during hotel list retrieval", e);
+				return false;
+			}
 			return true;
 		}
 

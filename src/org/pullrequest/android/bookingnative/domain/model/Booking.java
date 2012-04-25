@@ -3,65 +3,83 @@ package org.pullrequest.android.bookingnative.domain.model;
 import java.io.Serializable;
 import java.util.Date;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.pullrequest.android.bookingnative.domain.model.Hotel.Hotels;
+import org.pullrequest.android.bookingnative.domain.dao.impl.BookingDaoImpl;
 import org.pullrequest.android.bookingnative.provider.DataProvider;
 
 import android.net.Uri;
 import android.provider.BaseColumns;
 
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
+
+@DatabaseTable(daoClass = BookingDaoImpl.class, tableName = Booking.TABLE_NAME)
 public final class Booking implements Serializable {
+
+	private static final long serialVersionUID = -4626796501390211104L;
+
+	public static final String TABLE_NAME = "bookings";
 	
-	private static final long serialVersionUID = 5929577397946339674L;
-	
-    private Long id;
-    private int userId;
-    private Long hotelId;
+	@DatabaseField(generatedId = true,columnName = Bookings.ID)
+    private long _id;
+    
+    @DatabaseField(columnName = Bookings.USER_ID)
+    private long userId;
+    
+    @DatabaseField(columnName = Bookings.HOTEL_ID)
+    private long hotelId;
+    
+    @DatabaseField(columnName = Bookings.CHECKIN_DATE)
     private Date checkinDate;
+    
+    @DatabaseField(columnName = Bookings.CHECKOUT_DATE)
     private Date checkoutDate;
+    
+    @DatabaseField(columnName = Bookings.CREDIT_CARD_NUMBER)
     private String creditCardNumber;
+    
+    @DatabaseField(columnName = Bookings.CREDIT_CARD_TYPE)
     private String creditCardType;
+    
+    @DatabaseField(columnName = Bookings.CREDIT_CARD_NAME)
     private String creditCardName;
+    
+    @DatabaseField(columnName = Bookings.CREDIT_CARD_EXPIRY_MONTH)
     private int creditCardExpiryMonth;
+    
+    @DatabaseField(columnName = Bookings.CREDIT_CARD_EXPIRY_YEAR)
     private int creditCardExpiryYear;
+    
+    @DatabaseField(columnName = Bookings.SMOKING)
     private boolean smoking;
+    
+    @DatabaseField(columnName = Bookings.BEDS)
     private int beds;
     
 	public Booking() {
 
 	}
 
-	public Booking(JSONObject json) {
-		try {
-			this.id = json.getLong(Hotels.ID);
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
+	public long get_id() {
+		return _id;
 	}
 
-
-	public Long getId() {
-		return id;
+	public void set_id(long id) {
+		this._id = id;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public int getUserId() {
+	public long getUserId() {
 		return userId;
 	}
 
-	public void setUserId(int userId) {
+	public void setUserId(long userId) {
 		this.userId = userId;
 	}
 
-	public Long getHotelId() {
+	public long getHotelId() {
 		return hotelId;
 	}
 
-	public void setHotelId(Long hotelId) {
+	public void setHotelId(long hotelId) {
 		this.hotelId = hotelId;
 	}
 
