@@ -49,15 +49,15 @@ public class Login extends OrmLiteBaseActivity<DatabaseHelper> implements OnClic
 		new LoginTask().execute(login.getText().toString(), password.getText().toString());
 	}
 
-	private class LoginTask extends AsyncTask<String, Void, String> {
+	private class LoginTask extends AsyncTask<String, Void, Long> {
 
 		@Override
-		protected String doInBackground(String... params) {
+		protected Long doInBackground(String... params) {
 			Map<String, String> loginParams = new HashMap<String, String>();
 			loginParams.put("login", params[0]);
 			loginParams.put("password", params[1]);
 			User user = userDao.findByLogin(params[0]);
-			return (user != null) ? user.getLogin() : "ko";
+			return (user != null) ? user.getId() : -1L;
 		}
 
 		@Override
@@ -67,12 +67,12 @@ public class Login extends OrmLiteBaseActivity<DatabaseHelper> implements OnClic
 		}
 
 		@Override
-		protected void onPostExecute(String login) {
-			if (login == null || (login.equalsIgnoreCase("ko"))) {
+		protected void onPostExecute(Long userId) {
+			if (userId == -1L) {
 				Toast.makeText(Login.this, "login failed", 1000).show();
 			} else {
 				// set logged
-				PreferencesManager.getInstance().savePref(Login.this, PreferencesManager.PREF_LOGGED, login);
+				PreferencesManager.getInstance().savePref(Login.this, PreferencesManager.PREF_LOGGED, userId);
 
 				// result ok and back to main activity
 				setResult(RESULT_OK);
@@ -103,7 +103,7 @@ public class Login extends OrmLiteBaseActivity<DatabaseHelper> implements OnClic
 			return true;
 
 		case R.id.menu_reset:
-			// TODO : reset bdd
+			getHelper().reset();
 			return true;
 		}
 		return false;

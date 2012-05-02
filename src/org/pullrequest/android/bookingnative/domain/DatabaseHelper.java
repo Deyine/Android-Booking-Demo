@@ -23,7 +23,7 @@ import com.j256.ormlite.table.TableUtils;
 public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
 	private static final String DATABASE_NAME = "booking.db";
-	private static final int DATABASE_VERSION = 1;
+	private static final int DATABASE_VERSION = 3;
 
 	private Dao<Hotel, Integer> hotelDao;
 	private Dao<User, Integer> userDao;
@@ -60,6 +60,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		if (hotelDao == null) {
 			try {
 				hotelDao = getDao(Hotel.class);
+				hotelDao.setObjectCache(true);
 			} catch (Exception e) {
 				Log.e(C.LOG_TAG, "unable to get hotel dao", e);
 			}
@@ -87,5 +88,9 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			}
 		}
 		return (BookingDao) bookingDao;
+	}
+	
+	public void reset() {
+		this.onUpgrade(this.getWritableDatabase(), this.getConnectionSource(), DATABASE_VERSION, DATABASE_VERSION);
 	}
 }

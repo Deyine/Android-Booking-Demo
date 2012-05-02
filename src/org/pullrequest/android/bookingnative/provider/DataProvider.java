@@ -8,7 +8,7 @@ import org.pullrequest.android.bookingnative.domain.model.Booking.Bookings;
 import org.pullrequest.android.bookingnative.domain.model.Hotel;
 import org.pullrequest.android.bookingnative.domain.model.Hotel.Hotels;
 import org.pullrequest.android.bookingnative.domain.model.User;
-import org.pullrequest.android.bookingnative.domain.model.User.Users;
+import org.pullrequest.android.bookingnative.domain.model.User.Schema;
 
 import android.content.ContentProvider;
 import android.content.ContentUris;
@@ -40,11 +40,11 @@ public class DataProvider extends ContentProvider {
 
 		sUriMatcher.addURI(AUTHORITY, User.TABLE_NAME, USERS);
 		usersProjectionMap = new HashMap<String, String>();
-		usersProjectionMap.put(Users.ID, Users.ID);
-		usersProjectionMap.put(Users.FIRST_NAME, Users.FIRST_NAME);
-		usersProjectionMap.put(Users.LAST_NAME, Users.LAST_NAME);
-		usersProjectionMap.put(Users.LOGIN, Users.LOGIN);
-		usersProjectionMap.put(Users.PASSWORD, Users.PASSWORD);
+		usersProjectionMap.put(Schema.ID, Schema.ID);
+		usersProjectionMap.put(Schema.FIRST_NAME, Schema.FIRST_NAME);
+		usersProjectionMap.put(Schema.LAST_NAME, Schema.LAST_NAME);
+		usersProjectionMap.put(Schema.LOGIN, Schema.LOGIN);
+		usersProjectionMap.put(Schema.PASSWORD, Schema.PASSWORD);
 
 		sUriMatcher.addURI(AUTHORITY, Hotel.TABLE_NAME, HOTELS);
 		hotelsProjectionMap = new HashMap<String, String>();
@@ -101,7 +101,7 @@ public class DataProvider extends ContentProvider {
 	public String getType(Uri uri) {
 		switch (sUriMatcher.match(uri)) {
 		case USERS:
-			return Users.CONTENT_TYPE;
+			return Schema.CONTENT_TYPE;
 		case HOTELS:
 			return Hotels.CONTENT_TYPE;
 		case BOOKINGS:
@@ -124,9 +124,9 @@ public class DataProvider extends ContentProvider {
 		SQLiteDatabase db = databaseHelper.getWritableDatabase();
 		switch (sUriMatcher.match(uri)) {
 		case USERS:
-			long rowId = db.insert(User.TABLE_NAME, Users.LOGIN, values);
+			long rowId = db.insert(User.TABLE_NAME, Schema.LOGIN, values);
 			if (rowId > 0) {
-				Uri noteUri = ContentUris.withAppendedId(Users.CONTENT_URI, rowId);
+				Uri noteUri = ContentUris.withAppendedId(Schema.CONTENT_URI, rowId);
 				getContext().getContentResolver().notifyChange(noteUri, null);
 				return noteUri;
 			}

@@ -8,7 +8,7 @@ import org.json.JSONObject;
 import org.pullrequest.android.bookingnative.C;
 import org.pullrequest.android.bookingnative.domain.dao.UserDao;
 import org.pullrequest.android.bookingnative.domain.model.User;
-import org.pullrequest.android.bookingnative.domain.model.User.Users;
+import org.pullrequest.android.bookingnative.domain.model.User.Schema;
 
 import android.util.Log;
 
@@ -34,11 +34,11 @@ public class UserDaoImpl extends BaseDaoImpl<User, Integer> implements UserDao {
 	public User create(JSONObject json) {
 		User user = new User();
 		try {
-			user.setId(json.getLong(Users.ID));
-			user.setFirstName(json.getString(Users.FIRST_NAME));
-			user.setLastName(json.getString(Users.LAST_NAME));
-			user.setLogin(json.getString(Users.LOGIN));
-			user.setPassword(json.getString(Users.PASSWORD));
+			user.setId(json.getLong(Schema.ID));
+			user.setFirstName(json.getString(Schema.FIRST_NAME));
+			user.setLastName(json.getString(Schema.LAST_NAME));
+			user.setLogin(json.getString(Schema.LOGIN));
+			user.setPassword(json.getString(Schema.PASSWORD));
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -48,7 +48,7 @@ public class UserDaoImpl extends BaseDaoImpl<User, Integer> implements UserDao {
 	@Override
 	public User findByLogin(String login) {
 		try {
-			List<User> users = this.queryForEq(Users.LOGIN, login);
+			List<User> users = this.queryForEq(Schema.LOGIN, login);
 			if(!users.isEmpty()) {
 				return users.get(0);
 			}

@@ -35,6 +35,12 @@ public class PreferencesManager {
 		SharedPreferencesCompat.apply(editor);
 	}
 
+	public void savePref(Context context, String name, long value) {
+		Editor editor = context.getSharedPreferences(PREFERENCES_NAME, Activity.MODE_PRIVATE).edit();
+		editor.putLong(name, value);
+		SharedPreferencesCompat.apply(editor);
+	}
+
 	public void savePref(Context context, String name, String value) {
 		Editor editor = context.getSharedPreferences(PREFERENCES_NAME, Activity.MODE_PRIVATE).edit();
 		editor.putString(name, value);
@@ -47,6 +53,10 @@ public class PreferencesManager {
 
 	public int getIntPref(Context context, String name) {
 		return context.getSharedPreferences(PREFERENCES_NAME, Activity.MODE_PRIVATE).getInt(name, -1);
+	}
+
+	public long getLongPref(Context context, String name) {
+		return context.getSharedPreferences(PREFERENCES_NAME, Activity.MODE_PRIVATE).getLong(name, -1L);
 	}
 
 	public String getStringPref(Context context, String name) {

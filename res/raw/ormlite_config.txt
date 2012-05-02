@@ -1,5 +1,5 @@
 #
-# generated on 2012/04/25 04:00:28
+# generated on 2012/05/02 05:45:05
 #
 # --table-start--
 dataClass=org.pullrequest.android.bookingnative.domain.model.Hotel
@@ -70,6 +70,12 @@ columnName=login
 fieldName=password
 columnName=password
 # --field-end--
+# --field-start--
+fieldName=bookings
+foreignCollection=true
+foreignCollectionEager=true
+foreignCollectionOrderColumnName=checkinDate
+# --field-end--
 # --table-fields-end--
 # --table-end--
 #################################
@@ -83,12 +89,14 @@ columnName=_id
 generatedId=true
 # --field-end--
 # --field-start--
-fieldName=userId
-columnName=user_id
+fieldName=user
+canBeNull=false
+foreign=true
 # --field-end--
 # --field-start--
-fieldName=hotelId
-columnName=hotel_id
+fieldName=hotel
+canBeNull=false
+foreign=true
 # --field-end--
 # --field-start--
 fieldName=checkinDate

@@ -22,11 +22,11 @@ public final class Booking implements Serializable {
 	@DatabaseField(generatedId = true,columnName = Bookings.ID)
     private long _id;
     
-    @DatabaseField(columnName = Bookings.USER_ID)
-    private long userId;
+    @DatabaseField(canBeNull = false, foreign = true)
+    private User user;
     
-    @DatabaseField(columnName = Bookings.HOTEL_ID)
-    private long hotelId;
+    @DatabaseField(canBeNull = false, foreign = true)
+    private Hotel hotel;
     
     @DatabaseField(columnName = Bookings.CHECKIN_DATE)
     private Date checkinDate;
@@ -55,9 +55,9 @@ public final class Booking implements Serializable {
     @DatabaseField(columnName = Bookings.BEDS)
     private int beds;
     
-	public Booking() {
-
-	}
+    public Booking() {
+    	
+    }
 
 	public long get_id() {
 		return _id;
@@ -67,20 +67,20 @@ public final class Booking implements Serializable {
 		this._id = id;
 	}
 
-	public long getUserId() {
-		return userId;
+	public User getUser() {
+		return user;
 	}
 
-	public void setUserId(long userId) {
-		this.userId = userId;
+	public void setUser(User user) {
+		this.user = user;
 	}
 
-	public long getHotelId() {
-		return hotelId;
+	public Hotel getHotel() {
+		return hotel;
 	}
 
-	public void setHotelId(long hotelId) {
-		this.hotelId = hotelId;
+	public void setHotel(Hotel hotel) {
+		this.hotel = hotel;
 	}
 
 	public Date getCheckinDate() {

@@ -17,4 +17,6 @@ public interface BookingDao extends Dao<Booking, Integer> {
 	Booking create(JSONObject json);
 	
 	Cursor findAll() throws SQLException;
+	
+	Cursor findByUserId(long userId) throws SQLException;
 }

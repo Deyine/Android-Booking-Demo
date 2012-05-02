@@ -10,6 +10,8 @@ import org.pullrequest.android.bookingnative.C;
 import org.pullrequest.android.bookingnative.domain.dao.BookingDao;
 import org.pullrequest.android.bookingnative.domain.model.Booking;
 import org.pullrequest.android.bookingnative.domain.model.Booking.Bookings;
+import org.pullrequest.android.bookingnative.domain.model.Hotel;
+import org.pullrequest.android.bookingnative.domain.model.User;
 
 import android.database.Cursor;
 import android.util.Log;
@@ -51,13 +53,19 @@ public class BookingDaoImpl extends BaseDaoImpl<Booking, Integer> implements Boo
 		return acs.getCursor();
 	}
 	
+	@Override
+	public Cursor findByUserId(long userId) throws SQLException {
+		AndroidCompiledStatement acs = (AndroidCompiledStatement) this.queryBuilder().orderBy(Bookings.CHECKIN_DATE, false).where().eq("user_id", userId).prepare().compile(this.connectionSource.getReadOnlyConnection(), StatementType.SELECT);
+		return acs.getCursor();
+	}
+	
 	public static Booking getFromCursor(Cursor cursor) {
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		
 		Booking booking = new Booking();
 		booking.set_id(cursor.getLong(0));
-		booking.setUserId(cursor.getInt(1));
-		booking.setHotelId(cursor.getLong(2));
+		booking.setUser(new User(cursor.getLong(1)));
+		booking.setHotel(new Hotel(cursor.getLong(2)));
 		try {
 			booking.setCheckinDate(dateFormat.parse(cursor.getString(3)));
 			booking.setCheckoutDate(dateFormat.parse(cursor.getString(4)));

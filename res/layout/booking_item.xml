@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content" >
+    android:layout_height="wrap_content">
 
     <TextView
         android:id="@+id/hotelName"
@@ -16,6 +16,7 @@
         android:layout_width="wrap_content"
     	android:layout_height="wrap_content"
     	android:padding="3dip"
-    	android:layout_toRightOf="@id/hotelName" />
+    	android:layout_below="@id/hotelName"
+    	android:text="05/20/2012 to 05/22/2012" />
 
 </RelativeLayout>

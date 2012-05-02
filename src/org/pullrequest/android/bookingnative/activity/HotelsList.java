@@ -41,8 +41,9 @@ public class HotelsList extends SearchableActivity {
 		hotelList = (ListView) findViewById(R.id.hotelList);
 		hotelList.setEmptyView(findViewById(R.id.hotels_empty));
 		hotelList.setAdapter(null);
-		new GetHotelsTask().execute();
 
+		new GetHotelsTask().execute();
+		
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 			ActionBar actionBar = getActionBar();
 			actionBar.setDisplayHomeAsUpEnabled(true);
@@ -50,18 +51,15 @@ public class HotelsList extends SearchableActivity {
 	}
 
 	@Override
-	protected void onResume() {
-		// update hotels list
-		new GetRemoteHotelsTask().execute();
-
-		super.onResume();
-	}
-
-	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater menuInflater = getMenuInflater();
 		menuInflater.inflate(R.menu.hotels, menu);
-		return super.onCreateOptionsMenu(menu);
+		boolean result = super.onCreateOptionsMenu(menu);
+
+		// update hotels list
+		new GetRemoteHotelsTask().execute();
+		
+		return result;
 	}
 
 	@Override
@@ -130,6 +128,9 @@ public class HotelsList extends SearchableActivity {
 			if (status.equalsIgnoreCase("ko")) {
 				Toast.makeText(HotelsList.this, "get hotels failed", Toast.LENGTH_LONG).show();
 			}
+			else {
+				hotelCursor.requery();
+			}
 		}
 	}
 
@@ -146,17 +147,9 @@ public class HotelsList extends SearchableActivity {
 			}
 			return true;
 		}
-
-
-		@Override
-		protected void onPreExecute() {
-			getActionBarHelper().setRefreshActionItemState(true);
-			super.onPreExecute();
-		}
 		
 		@Override
 		protected void onPostExecute(Boolean status) {
-			getActionBarHelper().setRefreshActionItemState(false);
 			hotelList.setAdapter(new HotelListAdapter(HotelsList.this, R.layout.hotel_item, hotelCursor, new String[] { Hotels.NAME, Hotels.ADDRESS, Hotels.CITY, Hotels.ZIP }, new int[] { R.id.name, R.id.address, R.id.city, R.id.zip }));
 		}
 	}

@@ -10,11 +10,9 @@ import org.pullrequest.android.bookingnative.C;
 import org.pullrequest.android.bookingnative.PreferencesManager;
 import org.pullrequest.android.bookingnative.R;
 import org.pullrequest.android.bookingnative.actionbar.ActionBarActivity;
-import org.pullrequest.android.bookingnative.domain.DatabaseHelper;
 import org.pullrequest.android.bookingnative.domain.model.Booking;
 import org.pullrequest.android.bookingnative.domain.model.Hotel;
 import org.pullrequest.android.bookingnative.domain.model.User;
-import org.pullrequest.android.bookingnative.domain.model.User.Users;
 
 import android.app.ActionBar;
 import android.app.Dialog;
@@ -64,18 +62,9 @@ public class BookHotel extends ActionBarActivity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 
 		hotel = (Hotel) getIntent().getExtras().get(C.EXTRA_HOTEL_KEY);
-		currentBooking.setHotelId(hotel.getId());
-		DatabaseHelper databaseHelper = new DatabaseHelper(this);
-		String login = preferencesManager.getStringPref(this, PreferencesManager.PREF_LOGGED);
-		User user = null;
-		try {
-			user = databaseHelper.getUserDao().queryForEq(Users.LOGIN, login).get(0);
-		} catch (SQLException e) {
-			Log.d(C.LOG_TAG, "Can't find user " + login, e);
-			this.finish();
-			return;
-		}
-		currentBooking.setUserId(user.getId());
+		currentBooking.setHotel(hotel);
+		long userId = preferencesManager.getLongPref(this, PreferencesManager.PREF_LOGGED);
+		currentBooking.setUser(new User(userId));
 
 		// get the current date
 		today = Calendar.getInstance();
