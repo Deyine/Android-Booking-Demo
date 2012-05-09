@@ -6,7 +6,7 @@ import android.content.SharedPreferences.Editor;
 
 public class PreferencesManager {
 
-	private static String PREFERENCES_NAME = "com.jops.android.ezdebts.controller.PreferencesController";
+	private static String PREFERENCES_NAME = "org.pullrequest.android.bookingv2.PreferencesController";
 
 	public static final String PREF_LOGGED = "logged_user_login";
 

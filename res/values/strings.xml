@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Booking</string>
+    <string name="app_name">Booking v2</string>
     
     <string name="login">Login name</string>
     <string name="password">Password</string>
@@ -16,6 +16,8 @@
     <string name="menu_logout">Logout</string>
     <string name="menu_reset">Reset</string>
     <string name="menu_book">Book</string>
+    <string name="menu_bench">Bench</string>
+    <string name="menu_bench_2">Bench tx</string>
     
     <string name="search_label">Search</string>
     <string name="search_hint">type a name</string>

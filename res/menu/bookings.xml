@@ -27,4 +27,12 @@
         android:title="@string/menu_logout"
         android:orderInCategory="2"
         android:showAsAction="ifRoom|withText" />
+    
+    <item android:id="@+id/menu_bench"
+        android:title="@string/menu_bench"
+        android:icon="@android:drawable/ic_menu_add" />
+    
+    <item android:id="@+id/menu_bench_2"
+        android:title="@string/menu_bench_2"
+        android:icon="@android:drawable/ic_menu_add" />
 </menu>
