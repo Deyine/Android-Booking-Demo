@@ -1,0 +1,5 @@
+<resources>
+    <string-array name="roboguice_modules">
+        <item>org.pullrequest.android.bookingnative.module.DaoModule</item>
+    </string-array>
+</resources>

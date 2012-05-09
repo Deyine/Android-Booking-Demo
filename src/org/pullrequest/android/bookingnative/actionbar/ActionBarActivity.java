@@ -16,14 +16,11 @@
 
 package org.pullrequest.android.bookingnative.actionbar;
 
-import org.pullrequest.android.bookingnative.domain.DatabaseHelper;
-
+import roboguice.activity.RoboActivity;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
-
-import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
 
 /**
  * A base activity that defers common functionality across app activities to an {@link
@@ -34,7 +31,7 @@ import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
  * NOTE: this may used with the Android Compatibility Package by extending
  * android.support.v4.app.FragmentActivity instead of {@link Activity}.
  */
-public abstract class ActionBarActivity extends OrmLiteBaseActivity<DatabaseHelper> {
+public abstract class ActionBarActivity extends RoboActivity {
 
     final ActionBarHelper mActionBarHelper = ActionBarHelper.createInstance(this);
 

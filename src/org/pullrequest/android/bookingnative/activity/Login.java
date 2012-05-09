@@ -7,10 +7,11 @@ import java.util.Map;
 import org.pullrequest.android.bookingnative.C;
 import org.pullrequest.android.bookingnative.PreferencesManager;
 import org.pullrequest.android.bookingnative.R;
-import org.pullrequest.android.bookingnative.domain.DatabaseHelper;
 import org.pullrequest.android.bookingnative.domain.dao.UserDao;
 import org.pullrequest.android.bookingnative.domain.model.User;
 
+import roboguice.activity.RoboActivity;
+import roboguice.inject.InjectView;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,11 +25,21 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
+import com.google.inject.Inject;
 
-public class Login extends OrmLiteBaseActivity<DatabaseHelper> implements OnClickListener {
+public class Login extends RoboActivity implements OnClickListener {
 
+	@Inject
 	private UserDao userDao;
+	
+	@InjectView(R.id.loginButton)
+	private Button loginButton;
+	
+	@InjectView(R.id.login)
+	private EditText login;
+	
+	@InjectView(R.id.password)
+	private EditText password;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -36,16 +47,11 @@ public class Login extends OrmLiteBaseActivity<DatabaseHelper> implements OnClic
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.login);
 
-		Button loginButton = (Button) findViewById(R.id.loginButton);
 		loginButton.setOnClickListener(this);
-		
-		userDao = getHelper().getUserDao();
 	}
 
 	@Override
 	public void onClick(View v) {
-		EditText login = (EditText) findViewById(R.id.login);
-		EditText password = (EditText) findViewById(R.id.password);
 		new LoginTask().execute(login.getText().toString(), password.getText().toString());
 	}
 
@@ -103,7 +109,7 @@ public class Login extends OrmLiteBaseActivity<DatabaseHelper> implements OnClic
 			return true;
 
 		case R.id.menu_reset:
-			getHelper().reset();
+			//getHelper().reset();
 			return true;
 		}
 		return false;

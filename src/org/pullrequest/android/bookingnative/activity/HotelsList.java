@@ -25,9 +25,13 @@ import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.inject.Inject;
+
 public class HotelsList extends SearchableActivity {
 
+	@Inject
 	private HotelDao hotelDao;
+	
 	private Cursor hotelCursor;
 	private ListView hotelList;
 
@@ -37,7 +41,6 @@ public class HotelsList extends SearchableActivity {
 		setContentView(R.layout.hotels);
 
 		// get hotels list
-		hotelDao = getHelper().getHotelDao();
 		hotelList = (ListView) findViewById(R.id.hotelList);
 		hotelList.setEmptyView(findViewById(R.id.hotels_empty));
 		hotelList.setAdapter(null);

@@ -10,6 +10,7 @@ import org.pullrequest.android.bookingnative.C;
 import org.pullrequest.android.bookingnative.PreferencesManager;
 import org.pullrequest.android.bookingnative.R;
 import org.pullrequest.android.bookingnative.actionbar.ActionBarActivity;
+import org.pullrequest.android.bookingnative.domain.dao.BookingDao;
 import org.pullrequest.android.bookingnative.domain.model.Booking;
 import org.pullrequest.android.bookingnative.domain.model.Hotel;
 import org.pullrequest.android.bookingnative.domain.model.User;
@@ -30,6 +31,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.google.inject.Inject;
 import com.googlecode.android.widgets.DateSlider.DateSlider;
 import com.googlecode.android.widgets.DateSlider.DateSlider.OnDateSetListener;
 import com.googlecode.android.widgets.DateSlider.DefaultDateSlider;
@@ -39,6 +41,9 @@ public class BookHotel extends ActionBarActivity implements OnClickListener {
 
 	private PreferencesManager preferencesManager = PreferencesManager.getInstance();
 
+	@Inject
+	private BookingDao bookingDao;
+	
 	protected Hotel hotel;
 
 	private static final int CHECK_IN_DATE_DIALOG_ID = 0;
@@ -145,7 +150,7 @@ public class BookHotel extends ActionBarActivity implements OnClickListener {
 		} else if (v.getId() == R.id.proceedButton) {
 			if (validateBooking()) {
 				try {
-					getHelper().getBookingDao().create(currentBooking);
+					bookingDao.create(currentBooking);
 				} catch (SQLException e) {
 					Log.e(C.LOG_TAG, "Problem during hotel booking", e);
 				}
