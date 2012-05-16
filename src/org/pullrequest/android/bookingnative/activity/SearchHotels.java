@@ -8,6 +8,7 @@ import org.pullrequest.android.bookingnative.actionbar.ActionBarActivity;
 import org.pullrequest.android.bookingnative.domain.dao.HotelDao;
 import org.pullrequest.android.bookingnative.domain.model.Hotel.Hotels;
 
+import roboguice.inject.ContentView;
 import android.app.ActionBar;
 import android.app.SearchManager;
 import android.content.Intent;
@@ -21,6 +22,7 @@ import android.widget.Toast;
 
 import com.google.inject.Inject;
 
+@ContentView(R.layout.hotels)
 public class SearchHotels extends ActionBarActivity {
 
 	@Inject
@@ -29,7 +31,6 @@ public class SearchHotels extends ActionBarActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.hotels);
 		handleIntent(getIntent());
 		
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {

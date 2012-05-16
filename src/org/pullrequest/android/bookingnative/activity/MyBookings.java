@@ -8,6 +8,9 @@ import org.pullrequest.android.bookingnative.domain.dao.UserDao;
 import org.pullrequest.android.bookingnative.domain.model.Booking;
 import org.pullrequest.android.bookingnative.domain.model.User;
 
+import roboguice.inject.ContentView;
+import roboguice.inject.InjectResource;
+import roboguice.inject.InjectView;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -22,6 +25,7 @@ import android.widget.ListView;
 import com.google.inject.Inject;
 import com.j256.ormlite.dao.ForeignCollection;
 
+@ContentView(R.layout.my_bookings)
 public class MyBookings extends SearchableActivity implements OnClickListener {
 
 	private PreferencesManager preferencesManager = PreferencesManager.getInstance();
@@ -29,16 +33,19 @@ public class MyBookings extends SearchableActivity implements OnClickListener {
 	@Inject
 	private UserDao userDao;
 	
+	@InjectView(R.id.buttonHotels)
+	private Button hotelsButton;
+	
+	@InjectResource(R.drawable.ic_book_hotel)
+	private Drawable newContentImg;
+	
 	public static final int LOGIN_ACTIVITY_CODE = 1;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.my_bookings);
 		setTitle("My bookings");
-
-		Button hotelsButton = (Button) findViewById(R.id.buttonHotels);
-		Drawable newContentImg = getResources().getDrawable(R.drawable.ic_book_hotel);
+		super.onCreate(savedInstanceState);
+		
 		newContentImg.setBounds(0, 0, newContentImg.getIntrinsicWidth(), newContentImg.getIntrinsicHeight());
 		hotelsButton.setCompoundDrawables(newContentImg, null, null, null);
 		hotelsButton.setOnClickListener(this);

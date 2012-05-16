@@ -11,8 +11,10 @@ import org.pullrequest.android.bookingnative.domain.dao.UserDao;
 import org.pullrequest.android.bookingnative.domain.model.User;
 
 import roboguice.activity.RoboActivity;
+import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
-import android.os.AsyncTask;
+import roboguice.util.RoboAsyncTask;
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -27,6 +29,7 @@ import android.widget.Toast;
 
 import com.google.inject.Inject;
 
+@ContentView(R.layout.login)
 public class Login extends RoboActivity implements OnClickListener {
 
 	@Inject
@@ -43,37 +46,44 @@ public class Login extends RoboActivity implements OnClickListener {
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		setContentView(R.layout.login);
+		super.onCreate(savedInstanceState);
 
 		loginButton.setOnClickListener(this);
 	}
 
 	@Override
 	public void onClick(View v) {
-		new LoginTask().execute(login.getText().toString(), password.getText().toString());
+		new LoginTask(this, login.getText().toString(), password.getText().toString()).execute();
 	}
 
-	private class LoginTask extends AsyncTask<String, Void, Long> {
+	private class LoginTask extends RoboAsyncTask<Long> {
+
+		private String login;
+		private String password;
+		
+		protected LoginTask(Context context, String login, String password) {
+			super(context);
+			this.login = login;
+			this.password = password;
+		}
 
 		@Override
-		protected Long doInBackground(String... params) {
+		public Long call() throws Exception {
 			Map<String, String> loginParams = new HashMap<String, String>();
-			loginParams.put("login", params[0]);
-			loginParams.put("password", params[1]);
-			User user = userDao.findByLogin(params[0]);
+			loginParams.put("login", login);
+			loginParams.put("password", password);
+			User user = userDao.findByLogin(login);
 			return (user != null) ? user.getId() : -1L;
 		}
 
 		@Override
 		protected void onPreExecute() {
 			// display login progress
-			super.onPreExecute();
 		}
 
 		@Override
-		protected void onPostExecute(Long userId) {
+		protected void onSuccess(Long userId) {
 			if (userId == -1L) {
 				Toast.makeText(Login.this, "login failed", 1000).show();
 			} else {

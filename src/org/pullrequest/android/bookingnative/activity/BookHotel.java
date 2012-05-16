@@ -15,6 +15,8 @@ import org.pullrequest.android.bookingnative.domain.model.Booking;
 import org.pullrequest.android.bookingnative.domain.model.Hotel;
 import org.pullrequest.android.bookingnative.domain.model.User;
 
+import roboguice.inject.ContentView;
+import roboguice.inject.InjectView;
 import android.app.ActionBar;
 import android.app.Dialog;
 import android.os.Build;
@@ -37,6 +39,7 @@ import com.googlecode.android.widgets.DateSlider.DateSlider.OnDateSetListener;
 import com.googlecode.android.widgets.DateSlider.DefaultDateSlider;
 import com.googlecode.android.widgets.DateSlider.MonthYearDateSlider;
 
+@ContentView(R.layout.book_hotel)
 public class BookHotel extends ActionBarActivity implements OnClickListener {
 
 	private PreferencesManager preferencesManager = PreferencesManager.getInstance();
@@ -51,12 +54,58 @@ public class BookHotel extends ActionBarActivity implements OnClickListener {
 	private static final int EXPIRY_DATE_DIALOG_ID = 2;
 
 	private Calendar today;
+
+	@InjectView(R.id.name)
+	private TextView name;
+	
+	@InjectView(R.id.address)
+	private TextView address;
+	
+	@InjectView(R.id.city)
+	private TextView city;
+	
+	@InjectView(R.id.state)
+	private TextView state;
+	
+	@InjectView(R.id.zip)
+	private TextView zip;
+	
+	@InjectView(R.id.country)
+	private TextView country;
+	
+	@InjectView(R.id.price)
+	private TextView price;
+	
+	@InjectView(R.id.checkin)
 	private EditText checkin;
+
+	@InjectView(R.id.checkout)
 	private EditText checkout;
+
+	@InjectView(R.id.creditCard)
 	private EditText creditCardNumber;
+
+	@InjectView(R.id.creditCardName)
 	private EditText creditCardName;
+
+	@InjectView(R.id.creditCardExpiryDate)
 	private EditText expiryDate;
 
+	@InjectView(R.id.roomPref)
+	private Spinner roomPref;
+
+	@InjectView(R.id.smokingPref)
+	private Spinner smokingPref;
+
+	@InjectView(R.id.creditCardType)
+	private Spinner creditCardTypePref;
+
+	@InjectView(R.id.cancelButton)
+	private Button cancelButton;
+
+	@InjectView(R.id.proceedButton)
+	private Button proceedButton;
+	
 	private Booking currentBooking = new Booking();
 
 	private SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
@@ -74,57 +123,38 @@ public class BookHotel extends ActionBarActivity implements OnClickListener {
 		// get the current date
 		today = Calendar.getInstance();
 
-		setContentView(R.layout.book_hotel);
-		TextView name = (TextView) findViewById(R.id.name);
 		name.setText(hotel.getName());
-		TextView address = (TextView) findViewById(R.id.address);
 		address.setText(hotel.getAddress());
-		TextView city = (TextView) findViewById(R.id.city);
 		city.setText(hotel.getCity());
-		TextView state = (TextView) findViewById(R.id.state);
 		state.setText(hotel.getState());
-		TextView zip = (TextView) findViewById(R.id.zip);
 		zip.setText(hotel.getZip());
-		TextView country = (TextView) findViewById(R.id.country);
 		country.setText(hotel.getCountry());
-		TextView price = (TextView) findViewById(R.id.price);
 		price.setText(String.valueOf(hotel.getPrice()));
 
-		checkin = (EditText) findViewById(R.id.checkin);
 		checkin.setInputType(InputType.TYPE_NULL);
 		checkin.setOnClickListener(this);
 		checkin.setText(dateFormat.format(today.getTime()));
-		checkout = (EditText) findViewById(R.id.checkout);
 		checkout.setInputType(InputType.TYPE_NULL);
 		checkout.setOnClickListener(this);
 		checkout.setText(dateFormat.format(today.getTime()));
 
-		creditCardNumber = (EditText) findViewById(R.id.creditCard);
-		creditCardName = (EditText) findViewById(R.id.creditCardName);
-
-		Spinner roomPref = (Spinner) findViewById(R.id.roomPref);
 		ArrayAdapter<CharSequence> roomPrefAdapter = ArrayAdapter.createFromResource(this, R.array.room_preferences, android.R.layout.simple_spinner_item);
 		roomPrefAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		roomPref.setAdapter(roomPrefAdapter);
-
-		Spinner smokingPref = (Spinner) findViewById(R.id.smokingPref);
+		
 		ArrayAdapter<CharSequence> smokingPrefAdapter = ArrayAdapter.createFromResource(this, R.array.smoking_preferences, android.R.layout.simple_spinner_item);
 		smokingPrefAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		smokingPref.setAdapter(smokingPrefAdapter);
 
-		Spinner creditCardTypePref = (Spinner) findViewById(R.id.creditCardType);
 		ArrayAdapter<CharSequence> creditCardTypeAdapter = ArrayAdapter.createFromResource(this, R.array.credit_card_preferences, android.R.layout.simple_spinner_item);
 		creditCardTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		creditCardTypePref.setAdapter(creditCardTypeAdapter);
 
-		expiryDate = (EditText) findViewById(R.id.creditCardExpiryDate);
 		expiryDate.setInputType(InputType.TYPE_NULL);
 		expiryDate.setOnClickListener(this);
 		expiryDate.setText(monthYearFormat.format(today.getTime()));
 
-		Button cancelButton = (Button) findViewById(R.id.cancelButton);
 		cancelButton.setOnClickListener(this);
-		Button proceedButton = (Button) findViewById(R.id.proceedButton);
 		proceedButton.setOnClickListener(this);
 
 		// set action bar navigation on

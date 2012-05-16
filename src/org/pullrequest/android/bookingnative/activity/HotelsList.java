@@ -11,11 +11,13 @@ import org.pullrequest.android.bookingnative.domain.model.Hotel.Hotels;
 import org.pullrequest.android.bookingnative.network.RequestService;
 import org.pullrequest.android.bookingnative.network.Response;
 
+import roboguice.inject.ContentView;
+import roboguice.util.RoboAsyncTask;
 import android.app.ActionBar;
 import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,6 +29,7 @@ import android.widget.Toast;
 
 import com.google.inject.Inject;
 
+@ContentView(R.layout.hotels)
 public class HotelsList extends SearchableActivity {
 
 	@Inject
@@ -38,14 +41,13 @@ public class HotelsList extends SearchableActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.hotels);
 
 		// get hotels list
 		hotelList = (ListView) findViewById(R.id.hotelList);
 		hotelList.setEmptyView(findViewById(R.id.hotels_empty));
 		hotelList.setAdapter(null);
 
-		new GetHotelsTask().execute();
+		new GetHotelsTask(this).execute();
 		
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 			ActionBar actionBar = getActionBar();
@@ -60,7 +62,7 @@ public class HotelsList extends SearchableActivity {
 		boolean result = super.onCreateOptionsMenu(menu);
 
 		// update hotels list
-		new GetRemoteHotelsTask().execute();
+		new GetRemoteHotelsTask(this).execute();
 		
 		return result;
 	}
@@ -73,7 +75,7 @@ public class HotelsList extends SearchableActivity {
 			break;
 
 		case R.id.menu_refresh:
-			new GetHotelsTask().execute();
+			new GetRemoteHotelsTask(this).execute();
 			break;
 
 		case R.id.menu_search:
@@ -100,10 +102,14 @@ public class HotelsList extends SearchableActivity {
 		}
 	}
 
-	private class GetRemoteHotelsTask extends AsyncTask<String, Void, String> {
+	private class GetRemoteHotelsTask extends RoboAsyncTask<String> {
+
+		protected GetRemoteHotelsTask(Context context) {
+			super(context);
+		}
 
 		@Override
-		protected String doInBackground(String... params) {
+		public String call() throws Exception {
 			Response hotelsResponse = null;
 			try {
 				hotelsResponse = RequestService.getInstance().get(new URI(C.SERVER_URL + "/api/hotels"));
@@ -122,11 +128,10 @@ public class HotelsList extends SearchableActivity {
 		@Override
 		protected void onPreExecute() {
 			getActionBarHelper().setRefreshActionItemState(true);
-			super.onPreExecute();
 		}
 
 		@Override
-		protected void onPostExecute(String status) {
+		protected void onSuccess(String status) {
 			getActionBarHelper().setRefreshActionItemState(false);
 			if (status.equalsIgnoreCase("ko")) {
 				Toast.makeText(HotelsList.this, "get hotels failed", Toast.LENGTH_LONG).show();
@@ -137,10 +142,14 @@ public class HotelsList extends SearchableActivity {
 		}
 	}
 
-	private class GetHotelsTask extends AsyncTask<String, Void, Boolean> {
+	private class GetHotelsTask extends RoboAsyncTask<Boolean> {
+
+		protected GetHotelsTask(Context context) {
+			super(context);
+		}
 
 		@Override
-		protected Boolean doInBackground(String... params) {
+		public Boolean call() throws Exception {
 			try {
 				hotelCursor = hotelDao.findAll();
 				startManagingCursor(hotelCursor);
@@ -152,7 +161,7 @@ public class HotelsList extends SearchableActivity {
 		}
 		
 		@Override
-		protected void onPostExecute(Boolean status) {
+		protected void onSuccess(Boolean status) {
 			hotelList.setAdapter(new HotelListAdapter(HotelsList.this, R.layout.hotel_item, hotelCursor, new String[] { Hotels.NAME, Hotels.ADDRESS, Hotels.CITY, Hotels.ZIP }, new int[] { R.id.name, R.id.address, R.id.city, R.id.zip }));
 		}
 	}

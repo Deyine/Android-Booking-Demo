@@ -5,6 +5,8 @@ import org.pullrequest.android.bookingnative.R;
 import org.pullrequest.android.bookingnative.actionbar.ActionBarActivity;
 import org.pullrequest.android.bookingnative.domain.model.Hotel;
 
+import roboguice.inject.ContentView;
+import roboguice.inject.InjectView;
 import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Build;
@@ -14,29 +16,43 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+@ContentView(R.layout.view_hotel)
 public class ViewHotel extends ActionBarActivity {
 
 	protected Hotel hotel;
 
+	@InjectView(R.id.name)
+	private TextView name;
+	
+	@InjectView(R.id.address)
+	private TextView address;
+	
+	@InjectView(R.id.city)
+	private TextView city;
+	
+	@InjectView(R.id.state)
+	private TextView state;
+	
+	@InjectView(R.id.zip)
+	private TextView zip;
+	
+	@InjectView(R.id.country)
+	private TextView country;
+	
+	@InjectView(R.id.price)
+	private TextView price;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		hotel = (Hotel) getIntent().getExtras().get(C.EXTRA_HOTEL_KEY);
 
-		setContentView(R.layout.view_hotel);
-		TextView name = (TextView) findViewById(R.id.name);
 		name.setText(hotel.getName());
-		TextView address = (TextView) findViewById(R.id.address);
 		address.setText(hotel.getAddress());
-		TextView city = (TextView) findViewById(R.id.city);
 		city.setText(hotel.getCity());
-		TextView state = (TextView) findViewById(R.id.state);
 		state.setText(hotel.getState());
-		TextView zip = (TextView) findViewById(R.id.zip);
 		zip.setText(hotel.getZip());
-		TextView country = (TextView) findViewById(R.id.country);
 		country.setText(hotel.getCountry());
-		TextView price = (TextView) findViewById(R.id.price);
 		price.setText(String.valueOf(hotel.getPrice()));
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
