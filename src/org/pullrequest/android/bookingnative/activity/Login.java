@@ -9,6 +9,7 @@ import org.pullrequest.android.bookingnative.PreferencesManager;
 import org.pullrequest.android.bookingnative.R;
 import org.pullrequest.android.bookingnative.domain.dao.UserDao;
 import org.pullrequest.android.bookingnative.domain.model.User;
+import org.pullrequest.android.bookingnative.domain.service.BookingService;
 
 import roboguice.activity.RoboActivity;
 import roboguice.inject.ContentView;
@@ -43,7 +44,10 @@ public class Login extends RoboActivity implements OnClickListener {
 	
 	@InjectView(R.id.password)
 	private EditText password;
-	
+
+	@Inject
+	private BookingService bookingService;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -119,7 +123,7 @@ public class Login extends RoboActivity implements OnClickListener {
 			return true;
 
 		case R.id.menu_reset:
-			//getHelper().reset();
+			bookingService.resetDatabase();
 			return true;
 		}
 		return false;

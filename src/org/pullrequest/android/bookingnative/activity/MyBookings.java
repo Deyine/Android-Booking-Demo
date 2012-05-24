@@ -11,6 +11,9 @@ import org.pullrequest.android.bookingnative.domain.model.User;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectResource;
 import roboguice.inject.InjectView;
+import roboguice.util.Ln;
+import roboguice.util.RoboAsyncTask;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -21,6 +24,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.inject.Inject;
 import com.j256.ormlite.dao.ForeignCollection;
@@ -76,6 +80,13 @@ public class MyBookings extends SearchableActivity implements OnClickListener {
 			onSearchRequested();
 			break;
 
+		case R.id.menu_bench:
+			new BenchmarkTask(this).execute();
+			break;
+
+		case R.id.menu_bench_2:
+			break;
+
 		case R.id.menu_logout:
 			PreferencesManager.getInstance().removePref(MyBookings.this, PreferencesManager.PREF_LOGGED);
 			MyBookings.this.finish();
@@ -111,4 +122,34 @@ public class MyBookings extends SearchableActivity implements OnClickListener {
 		}
 	}
 
+	private class BenchmarkTask extends RoboAsyncTask<Long> {
+
+		private int nb = 1000;
+		
+		protected BenchmarkTask(Context context) {
+			super(context);
+		}
+
+		@Override
+		public Long call() throws Exception {
+			long time = 0L;
+			long start = System.currentTimeMillis();
+			try {
+				for(int i=0; i<nb; i++) {
+					User user = new User(100 + i);
+					user.setLogin("user" + i);
+					userDao.create(user);
+				}
+				time = System.currentTimeMillis() - start;
+			} catch (SQLException e) {
+				Ln.w(e);
+			}
+			return time;
+		}
+
+		@Override
+		protected void onSuccess(Long time) {
+			Toast.makeText(this.context, nb + " insert : " + time, Toast.LENGTH_LONG).show();
+		}
+	}
 }
