@@ -11,43 +11,45 @@ import org.pullrequest.android.bookingnative.domain.model.Hotel.Hotels;
 import org.pullrequest.android.bookingnative.network.RequestService;
 import org.pullrequest.android.bookingnative.network.Response;
 
-import roboguice.inject.ContentView;
-import roboguice.util.RoboAsyncTask;
+import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.SearchManager;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Build;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.inject.Inject;
+import com.googlecode.androidannotations.annotations.AfterViews;
+import com.googlecode.androidannotations.annotations.Background;
+import com.googlecode.androidannotations.annotations.EActivity;
+import com.googlecode.androidannotations.annotations.OptionsItem;
+import com.googlecode.androidannotations.annotations.OptionsMenu;
+import com.googlecode.androidannotations.annotations.UiThread;
+import com.googlecode.androidannotations.annotations.ViewById;
 
-@ContentView(R.layout.hotels)
+@EActivity(R.layout.hotels)
+@OptionsMenu(R.menu.hotels)
 public class HotelsList extends SearchableActivity {
 
 	@Inject
 	private HotelDao hotelDao;
-	
+
 	private Cursor hotelCursor;
-	private ListView hotelList;
 
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+	@ViewById
+	ListView hotelList;
 
+	@AfterViews
+	@SuppressLint("NewApi")
+	public void init() {
 		// get hotels list
-		hotelList = (ListView) findViewById(R.id.hotelList);
 		hotelList.setEmptyView(findViewById(R.id.hotels_empty));
 		hotelList.setAdapter(null);
-
-		new GetHotelsTask(this).execute();
+		getHotels();
 		
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 			ActionBar actionBar = getActionBar();
@@ -57,32 +59,23 @@ public class HotelsList extends SearchableActivity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		MenuInflater menuInflater = getMenuInflater();
-		menuInflater.inflate(R.menu.hotels, menu);
-		boolean result = super.onCreateOptionsMenu(menu);
-
-		// update hotels list
-		new GetRemoteHotelsTask(this).execute();
-		
-		return result;
+		getRemoteHotels();
+		return super.onCreateOptionsMenu(menu);
 	}
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case android.R.id.home:
-			this.finish();
-			break;
+	@OptionsItem(android.R.id.home)
+	public void home() {
+		this.finish();
+	}
+	
+	@OptionsItem(R.id.menu_search)
+	public void searchOption() {
+		onSearchRequested();
+	}
 
-		case R.id.menu_refresh:
-			new GetRemoteHotelsTask(this).execute();
-			break;
-
-		case R.id.menu_search:
-			onSearchRequested();
-			break;
-		}
-		return super.onOptionsItemSelected(item);
+	@OptionsItem(R.id.menu_refresh)
+	public void refresh() {
+		getRemoteHotels();
 	}
 
 	@Override
@@ -102,67 +95,55 @@ public class HotelsList extends SearchableActivity {
 		}
 	}
 
-	private class GetRemoteHotelsTask extends RoboAsyncTask<String> {
-
-		protected GetRemoteHotelsTask(Context context) {
-			super(context);
-		}
-
-		@Override
-		public String call() throws Exception {
-			Response hotelsResponse = null;
-			try {
-				hotelsResponse = RequestService.getInstance().get(new URI(C.SERVER_URL + "/api/hotels"));
-				if (hotelsResponse.getCode() == 200) {
-					JSONArray jsonHotels = new JSONArray(hotelsResponse.getJsonData());
-					if (!hotelDao.updateList(jsonHotels)) {
-						return "ko";
-					}
+	@Background
+	public void getRemoteHotels() {
+		setRefreshItemState(true);
+		String status = "ko";
+		Response hotelsResponse = null;
+		try {
+			hotelsResponse = RequestService.getInstance().get(new URI(C.SERVER_URL + "/api/hotels"));
+			if ((hotelsResponse != null) && (hotelsResponse.getCode() == 200)) {
+				JSONArray jsonHotels = new JSONArray(hotelsResponse.getJsonData());
+				if (!hotelDao.updateList(jsonHotels)) {
+					status = "ko";
+				} else {
+					status = "ok";
 				}
-			} catch (Exception e) {
-				Log.e(C.LOG_TAG, "Problem during hotels update", e);
 			}
-			return ((hotelsResponse == null) || (hotelsResponse.getCode() != 200)) ? "ko" : "ok";
+		} catch (Exception e) {
+			Log.e(C.LOG_TAG, "Problem during hotels update", e);
 		}
+		getRemoteHotelsResponse(status);
+	}
 
-		@Override
-		protected void onPreExecute() {
-			getActionBarHelper().setRefreshActionItemState(true);
-		}
-
-		@Override
-		protected void onSuccess(String status) {
-			getActionBarHelper().setRefreshActionItemState(false);
-			if (status.equalsIgnoreCase("ko")) {
-				Toast.makeText(HotelsList.this, "get hotels failed", Toast.LENGTH_LONG).show();
-			}
-			else {
-				hotelCursor.requery();
-			}
+	@UiThread
+	public void getRemoteHotelsResponse(String status) {
+		setRefreshItemState(false);
+		if (status.equalsIgnoreCase("ko")) {
+			Toast.makeText(HotelsList.this, "get hotels failed", Toast.LENGTH_LONG).show();
+		} else {
+			hotelCursor.requery();
 		}
 	}
 
-	private class GetHotelsTask extends RoboAsyncTask<Boolean> {
+	@UiThread
+	public void setRefreshItemState(boolean state) {
+		getActionBarHelper().setRefreshActionItemState(state);
+	}
 
-		protected GetHotelsTask(Context context) {
-			super(context);
+	@Background
+	public void getHotels() {
+		try {
+			hotelCursor = hotelDao.findAll();
+			startManagingCursor(hotelCursor);
+		} catch (SQLException e) {
+			Log.e(C.LOG_TAG, "Problem during hotel list retrieval", e);
 		}
+		refreshHotelsList();
+	}
 
-		@Override
-		public Boolean call() throws Exception {
-			try {
-				hotelCursor = hotelDao.findAll();
-				startManagingCursor(hotelCursor);
-			} catch (SQLException e) {
-				Log.e(C.LOG_TAG, "Problem during hotel list retrieval", e);
-				return false;
-			}
-			return true;
-		}
-		
-		@Override
-		protected void onSuccess(Boolean status) {
-			hotelList.setAdapter(new HotelListAdapter(HotelsList.this, R.layout.hotel_item, hotelCursor, new String[] { Hotels.NAME, Hotels.ADDRESS, Hotels.CITY, Hotels.ZIP }, new int[] { R.id.name, R.id.address, R.id.city, R.id.zip }));
-		}
+	@UiThread
+	protected void refreshHotelsList() {
+		hotelList.setAdapter(new HotelListAdapter(HotelsList.this, R.layout.hotel_item, hotelCursor, new String[] { Hotels.NAME, Hotels.ADDRESS, Hotels.CITY, Hotels.ZIP }, new int[] { R.id.name, R.id.address, R.id.city, R.id.zip }));
 	}
 }

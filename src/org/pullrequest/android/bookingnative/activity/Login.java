@@ -4,128 +4,99 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.pullrequest.android.bookingnative.BookingPrefs_;
 import org.pullrequest.android.bookingnative.C;
-import org.pullrequest.android.bookingnative.PreferencesManager;
 import org.pullrequest.android.bookingnative.R;
 import org.pullrequest.android.bookingnative.domain.dao.UserDao;
 import org.pullrequest.android.bookingnative.domain.model.User;
 import org.pullrequest.android.bookingnative.domain.service.BookingService;
 
 import roboguice.activity.RoboActivity;
-import roboguice.inject.ContentView;
-import roboguice.inject.InjectView;
-import roboguice.util.RoboAsyncTask;
-import android.content.Context;
-import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.inject.Inject;
+import com.googlecode.androidannotations.annotations.Background;
+import com.googlecode.androidannotations.annotations.Click;
+import com.googlecode.androidannotations.annotations.EActivity;
+import com.googlecode.androidannotations.annotations.NoTitle;
+import com.googlecode.androidannotations.annotations.OptionsItem;
+import com.googlecode.androidannotations.annotations.OptionsMenu;
+import com.googlecode.androidannotations.annotations.UiThread;
+import com.googlecode.androidannotations.annotations.ViewById;
+import com.googlecode.androidannotations.annotations.sharedpreferences.Pref;
 
-@ContentView(R.layout.login)
-public class Login extends RoboActivity implements OnClickListener {
+@EActivity(R.layout.login)
+@OptionsMenu(R.menu.debug)
+@NoTitle
+public class Login extends RoboActivity {
 
+	@Pref
+	BookingPrefs_ prefs;
+	
 	@Inject
 	private UserDao userDao;
-	
-	@InjectView(R.id.loginButton)
-	private Button loginButton;
-	
-	@InjectView(R.id.login)
-	private EditText login;
-	
-	@InjectView(R.id.password)
-	private EditText password;
 
 	@Inject
 	private BookingService bookingService;
 
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		super.onCreate(savedInstanceState);
+	@ViewById(R.id.loginButton)
+	Button loginButton;
 
-		loginButton.setOnClickListener(this);
+	@ViewById(R.id.login)
+	EditText login;
+
+	@ViewById(R.id.password)
+	EditText password;
+
+	@Click(R.id.loginButton)
+	public void loginButtonClick(View v) {
+		login(login.getText().toString(), password.getText().toString());
 	}
 
-	@Override
-	public void onClick(View v) {
-		new LoginTask(this, login.getText().toString(), password.getText().toString()).execute();
+	@Background
+	public void login(String login, String password) {
+		Map<String, String> loginParams = new HashMap<String, String>();
+		loginParams.put("login", login);
+		loginParams.put("password", password);
+		loginResult(userDao.findByLogin(login));
 	}
 
-	private class LoginTask extends RoboAsyncTask<Long> {
+	@UiThread
+	public void loginResult(User user) {
+		if (user == null) {
+			Toast.makeText(Login.this, "login failed", Toast.LENGTH_LONG).show();
+		} else {
+			// set logged
+			prefs.loggedUserId().put(user.getId());
 
-		private String login;
-		private String password;
-		
-		protected LoginTask(Context context, String login, String password) {
-			super(context);
-			this.login = login;
-			this.password = password;
-		}
-
-		@Override
-		public Long call() throws Exception {
-			Map<String, String> loginParams = new HashMap<String, String>();
-			loginParams.put("login", login);
-			loginParams.put("password", password);
-			User user = userDao.findByLogin(login);
-			return (user != null) ? user.getId() : -1L;
-		}
-
-		@Override
-		protected void onPreExecute() {
-			// display login progress
-		}
-
-		@Override
-		protected void onSuccess(Long userId) {
-			if (userId == -1L) {
-				Toast.makeText(Login.this, "login failed", 1000).show();
-			} else {
-				// set logged
-				PreferencesManager.getInstance().savePref(Login.this, PreferencesManager.PREF_LOGGED, userId);
-
-				// result ok and back to main activity
-				setResult(RESULT_OK);
-				Login.this.finish();
-			}
+			// result ok and back to main activity
+			setResult(RESULT_OK);
+			Login.this.finish();
 		}
 	}
-	
-	public boolean onCreateOptionsMenu(Menu menu) {
-		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.debug, menu);
-		return true;
+
+	@OptionsItem(R.id.menu_create_demo)
+	@Background
+	public void createDemoUser() {
+		User demoUser = new User();
+		demoUser.setLogin("demo");
+		demoUser.setPassword("demo");
+		demoUser.setFirstName("John");
+		demoUser.setLastName("Travis");
+		try {
+			userDao.create(demoUser);
+		} catch (SQLException e) {
+			Log.w(C.LOG_TAG, "Problem during demo user creation", e);
+		}
 	}
 
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case R.id.menu_create_demo:
-			User demoUser = new User();
-			demoUser.setLogin("demo");
-			demoUser.setPassword("demo");
-			demoUser.setFirstName("John");
-			demoUser.setLastName("Travis");
-			try {
-				userDao.create(demoUser);
-			} catch (SQLException e) {
-				Log.w(C.LOG_TAG, "Problem during demo user creation", e);
-			}
-			return true;
-
-		case R.id.menu_reset:
-			bookingService.resetDatabase();
-			return true;
-		}
-		return false;
+	@OptionsItem(R.id.menu_reset)
+	@Background
+	public void resetDb() {
+		bookingService.resetDatabase();
 	}
 }

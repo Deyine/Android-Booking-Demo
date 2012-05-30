@@ -17,33 +17,33 @@ public final class Hotel implements Serializable {
 	private static final long serialVersionUID = -4682119973261761774L;
 
 	public static final String TABLE_NAME = "hotels";
-	
-	@DatabaseField(generatedId = true, columnName = Hotels.ID)
+
+	@DatabaseField(id = true, columnName = Hotels.ID)
 	private long id;
-	
+
 	@DatabaseField(columnName = Hotels.NAME)
-    private String name;
-	
+	private String name;
+
 	@DatabaseField(columnName = Hotels.ADDRESS)
-    private String address;
-	
+	private String address;
+
 	@DatabaseField(columnName = Hotels.CITY)
-    private String city;
-	
+	private String city;
+
 	@DatabaseField(columnName = Hotels.STATE)
-    private String state;
-	
+	private String state;
+
 	@DatabaseField(columnName = Hotels.ZIP)
-    private String zip;
-	
+	private String zip;
+
 	@DatabaseField(columnName = Hotels.COUNTRY)
-    private String country;
-	
+	private String country;
+
 	@DatabaseField(columnName = Hotels.STARS)
-    private int stars;
-	
+	private int stars;
+
 	@DatabaseField(columnName = Hotels.PRICE)
-    private double price;
+	private double price;
 
 	public Hotel() {
 

@@ -22,8 +22,8 @@ import com.j256.ormlite.table.TableUtils;
 
 public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
-	private static final String DATABASE_NAME = "bookingv2.db";
-	private static final int DATABASE_VERSION = 2;
+	private static final String DATABASE_NAME = "bookingv4.db";
+	private static final int DATABASE_VERSION = 3;
 
 	private Dao<Hotel, Integer> hotelDao;
 	private Dao<User, Integer> userDao;

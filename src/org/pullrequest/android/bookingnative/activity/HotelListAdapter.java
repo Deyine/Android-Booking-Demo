@@ -38,7 +38,7 @@ public class HotelListAdapter extends SimpleCursorAdapter implements OnClickList
 
 	@Override
 	public void onClick(View v) {
-		Intent viewHotelIntent = new Intent(context, ViewHotel.class);
+		Intent viewHotelIntent = new Intent(context, ViewHotel_.class);
 		viewHotelIntent.putExtra(C.EXTRA_HOTEL_KEY, (Hotel) v.getTag());
 		context.startActivity(viewHotelIntent);
 	}

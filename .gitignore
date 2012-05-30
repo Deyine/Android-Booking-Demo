@@ -6,5 +6,7 @@
 .settings
 .project
 .classpath
+.apt_generated
+.factorypath
 bin
 gen

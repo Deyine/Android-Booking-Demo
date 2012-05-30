@@ -6,8 +6,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.pullrequest.android.bookingnative.BookingPrefs_;
 import org.pullrequest.android.bookingnative.C;
-import org.pullrequest.android.bookingnative.PreferencesManager;
 import org.pullrequest.android.bookingnative.R;
 import org.pullrequest.android.bookingnative.actionbar.ActionBarActivity;
 import org.pullrequest.android.bookingnative.domain.dao.BookingDao;
@@ -15,18 +15,12 @@ import org.pullrequest.android.bookingnative.domain.model.Booking;
 import org.pullrequest.android.bookingnative.domain.model.Hotel;
 import org.pullrequest.android.bookingnative.domain.model.User;
 
-import roboguice.inject.ContentView;
-import roboguice.inject.InjectView;
+import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.Dialog;
 import android.os.Build;
-import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -38,16 +32,28 @@ import com.googlecode.android.widgets.DateSlider.DateSlider;
 import com.googlecode.android.widgets.DateSlider.DateSlider.OnDateSetListener;
 import com.googlecode.android.widgets.DateSlider.DefaultDateSlider;
 import com.googlecode.android.widgets.DateSlider.MonthYearDateSlider;
+import com.googlecode.androidannotations.annotations.AfterViews;
+import com.googlecode.androidannotations.annotations.Click;
+import com.googlecode.androidannotations.annotations.EActivity;
+import com.googlecode.androidannotations.annotations.Extra;
+import com.googlecode.androidannotations.annotations.NonConfigurationInstance;
+import com.googlecode.androidannotations.annotations.OptionsItem;
+import com.googlecode.androidannotations.annotations.UiThread;
+import com.googlecode.androidannotations.annotations.ViewById;
+import com.googlecode.androidannotations.annotations.sharedpreferences.Pref;
 
-@ContentView(R.layout.book_hotel)
-public class BookHotel extends ActionBarActivity implements OnClickListener {
+@EActivity(R.layout.book_hotel)
+public class BookHotel extends ActionBarActivity {
 
-	private PreferencesManager preferencesManager = PreferencesManager.getInstance();
+	@Pref
+	BookingPrefs_ prefs;
 
 	@Inject
 	private BookingDao bookingDao;
-	
-	protected Hotel hotel;
+
+	@NonConfigurationInstance
+	@Extra(C.EXTRA_HOTEL_KEY)
+	Hotel hotel;
 
 	private static final int CHECK_IN_DATE_DIALOG_ID = 0;
 	private static final int CHECK_OUT_DATE_DIALOG_ID = 1;
@@ -55,69 +61,68 @@ public class BookHotel extends ActionBarActivity implements OnClickListener {
 
 	private Calendar today;
 
-	@InjectView(R.id.name)
-	private TextView name;
-	
-	@InjectView(R.id.address)
-	private TextView address;
-	
-	@InjectView(R.id.city)
-	private TextView city;
-	
-	@InjectView(R.id.state)
-	private TextView state;
-	
-	@InjectView(R.id.zip)
-	private TextView zip;
-	
-	@InjectView(R.id.country)
-	private TextView country;
-	
-	@InjectView(R.id.price)
-	private TextView price;
-	
-	@InjectView(R.id.checkin)
-	private EditText checkin;
+	@ViewById(R.id.name)
+	TextView name;
 
-	@InjectView(R.id.checkout)
-	private EditText checkout;
+	@ViewById(R.id.address)
+	TextView address;
 
-	@InjectView(R.id.creditCard)
-	private EditText creditCardNumber;
+	@ViewById(R.id.city)
+	TextView city;
 
-	@InjectView(R.id.creditCardName)
-	private EditText creditCardName;
+	@ViewById(R.id.state)
+	TextView state;
 
-	@InjectView(R.id.creditCardExpiryDate)
-	private EditText expiryDate;
+	@ViewById(R.id.zip)
+	TextView zip;
 
-	@InjectView(R.id.roomPref)
-	private Spinner roomPref;
+	@ViewById(R.id.country)
+	TextView country;
 
-	@InjectView(R.id.smokingPref)
-	private Spinner smokingPref;
+	@ViewById(R.id.price)
+	TextView price;
 
-	@InjectView(R.id.creditCardType)
-	private Spinner creditCardTypePref;
+	@ViewById(R.id.checkin)
+	EditText checkin;
 
-	@InjectView(R.id.cancelButton)
-	private Button cancelButton;
+	@ViewById(R.id.checkout)
+	EditText checkout;
 
-	@InjectView(R.id.proceedButton)
-	private Button proceedButton;
-	
+	@ViewById(R.id.creditCard)
+	EditText creditCardNumber;
+
+	@ViewById(R.id.creditCardName)
+	EditText creditCardName;
+
+	@ViewById(R.id.creditCardExpiryDate)
+	EditText expiryDate;
+
+	@ViewById(R.id.roomPref)
+	Spinner roomPref;
+
+	@ViewById(R.id.smokingPref)
+	Spinner smokingPref;
+
+	@ViewById(R.id.creditCardType)
+	Spinner creditCardTypePref;
+
+	@ViewById(R.id.cancelButton)
+	Button cancelButton;
+
+	@ViewById(R.id.proceedButton)
+	Button proceedButton;
+
 	private Booking currentBooking = new Booking();
 
 	private SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
 	private SimpleDateFormat monthYearFormat = new SimpleDateFormat("MM/yyyy");
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-
-		hotel = (Hotel) getIntent().getExtras().get(C.EXTRA_HOTEL_KEY);
+	@AfterViews
+	@SuppressLint("NewApi")
+	protected void init() {
 		currentBooking.setHotel(hotel);
-		long userId = preferencesManager.getLongPref(this, PreferencesManager.PREF_LOGGED);
+
+		long userId = prefs.loggedUserId().get();
 		currentBooking.setUser(new User(userId));
 
 		// get the current date
@@ -132,16 +137,14 @@ public class BookHotel extends ActionBarActivity implements OnClickListener {
 		price.setText(String.valueOf(hotel.getPrice()));
 
 		checkin.setInputType(InputType.TYPE_NULL);
-		checkin.setOnClickListener(this);
 		checkin.setText(dateFormat.format(today.getTime()));
 		checkout.setInputType(InputType.TYPE_NULL);
-		checkout.setOnClickListener(this);
 		checkout.setText(dateFormat.format(today.getTime()));
 
 		ArrayAdapter<CharSequence> roomPrefAdapter = ArrayAdapter.createFromResource(this, R.array.room_preferences, android.R.layout.simple_spinner_item);
 		roomPrefAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		roomPref.setAdapter(roomPrefAdapter);
-		
+
 		ArrayAdapter<CharSequence> smokingPrefAdapter = ArrayAdapter.createFromResource(this, R.array.smoking_preferences, android.R.layout.simple_spinner_item);
 		smokingPrefAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		smokingPref.setAdapter(smokingPrefAdapter);
@@ -151,11 +154,7 @@ public class BookHotel extends ActionBarActivity implements OnClickListener {
 		creditCardTypePref.setAdapter(creditCardTypeAdapter);
 
 		expiryDate.setInputType(InputType.TYPE_NULL);
-		expiryDate.setOnClickListener(this);
 		expiryDate.setText(monthYearFormat.format(today.getTime()));
-
-		cancelButton.setOnClickListener(this);
-		proceedButton.setOnClickListener(this);
 
 		// set action bar navigation on
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
@@ -164,28 +163,38 @@ public class BookHotel extends ActionBarActivity implements OnClickListener {
 		}
 	}
 
-	@Override
-	public void onClick(View v) {
-		if (v.getId() == R.id.checkin) {
-			checkin.setError(null);
-			showDialog(CHECK_IN_DATE_DIALOG_ID);
-		} else if (v.getId() == R.id.checkout) {
-			checkout.setError(null);
-			showDialog(CHECK_OUT_DATE_DIALOG_ID);
-		} else if (v.getId() == R.id.creditCardExpiryDate) {
-			expiryDate.setError(null);
-			showDialog(EXPIRY_DATE_DIALOG_ID);
-		} else if (v.getId() == R.id.cancelButton) {
-			this.finish();
-		} else if (v.getId() == R.id.proceedButton) {
-			if (validateBooking()) {
-				try {
-					bookingDao.create(currentBooking);
-				} catch (SQLException e) {
-					Log.e(C.LOG_TAG, "Problem during hotel booking", e);
-				}
-				this.finish();
+	@Click(R.id.checkin)
+	public void checkinClick() {
+		checkin.setError(null);
+		showDialog(CHECK_IN_DATE_DIALOG_ID);
+	}
+
+	@Click(R.id.checkout)
+	public void checkoutClick() {
+		checkout.setError(null);
+		showDialog(CHECK_OUT_DATE_DIALOG_ID);
+	}
+
+	@Click(R.id.creditCardExpiryDate)
+	public void creditCardExpiryDateClick() {
+		expiryDate.setError(null);
+		showDialog(EXPIRY_DATE_DIALOG_ID);
+	}
+
+	@Click(R.id.cancelButton)
+	public void cancelButtonClick() {
+		this.finish();
+	}
+
+	@Click(R.id.proceedButton)
+	public void proceedButtonClick() {
+		if (validateBooking()) {
+			try {
+				bookingDao.create(currentBooking);
+			} catch (SQLException e) {
+				Log.e(C.LOG_TAG, "Problem during hotel booking", e);
 			}
+			this.finish();
 		}
 	}
 
@@ -217,19 +226,9 @@ public class BookHotel extends ActionBarActivity implements OnClickListener {
 		return null;
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		return super.onCreateOptionsMenu(menu);
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case android.R.id.home:
-			this.finish();
-			break;
-		}
-		return super.onOptionsItemSelected(item);
+	@OptionsItem(android.R.id.home)
+	public void home() {
+		this.finish();
 	}
 
 	/**
@@ -311,14 +310,16 @@ public class BookHotel extends ActionBarActivity implements OnClickListener {
 		return valid;
 	}
 
-	private void clearErrors() {
+	@UiThread
+	public void clearErrors() {
 		checkin.setError(null);
 		checkout.setError(null);
 		creditCardNumber.setError(null);
 		creditCardName.setError(null);
 	}
 
-	private void displayTextError(EditText edit, String message) {
+	@UiThread
+	public void displayTextError(EditText edit, String message) {
 		edit.setError(message);
 	}
 }
