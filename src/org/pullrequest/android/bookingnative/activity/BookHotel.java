@@ -10,10 +10,10 @@ import org.pullrequest.android.bookingnative.BookingPrefs_;
 import org.pullrequest.android.bookingnative.C;
 import org.pullrequest.android.bookingnative.R;
 import org.pullrequest.android.bookingnative.actionbar.ActionBarActivity;
-import org.pullrequest.android.bookingnative.domain.dao.BookingDao;
 import org.pullrequest.android.bookingnative.domain.model.Booking;
 import org.pullrequest.android.bookingnative.domain.model.Hotel;
 import org.pullrequest.android.bookingnative.domain.model.User;
+import org.pullrequest.android.bookingnative.domain.service.BookingService;
 
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
@@ -27,12 +27,12 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.google.inject.Inject;
 import com.googlecode.android.widgets.DateSlider.DateSlider;
 import com.googlecode.android.widgets.DateSlider.DateSlider.OnDateSetListener;
 import com.googlecode.android.widgets.DateSlider.DefaultDateSlider;
 import com.googlecode.android.widgets.DateSlider.MonthYearDateSlider;
 import com.googlecode.androidannotations.annotations.AfterViews;
+import com.googlecode.androidannotations.annotations.Bean;
 import com.googlecode.androidannotations.annotations.Click;
 import com.googlecode.androidannotations.annotations.EActivity;
 import com.googlecode.androidannotations.annotations.Extra;
@@ -48,8 +48,8 @@ public class BookHotel extends ActionBarActivity {
 	@Pref
 	BookingPrefs_ prefs;
 
-	@Inject
-	private BookingDao bookingDao;
+	@Bean
+	BookingService bookingService;
 
 	@NonConfigurationInstance
 	@Extra(C.EXTRA_HOTEL_KEY)
@@ -190,7 +190,7 @@ public class BookHotel extends ActionBarActivity {
 	public void proceedButtonClick() {
 		if (validateBooking()) {
 			try {
-				bookingDao.create(currentBooking);
+				bookingService.getDao().create(currentBooking);
 			} catch (SQLException e) {
 				Log.e(C.LOG_TAG, "Problem during hotel booking", e);
 			}

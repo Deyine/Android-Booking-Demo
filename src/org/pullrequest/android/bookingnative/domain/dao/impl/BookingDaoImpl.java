@@ -22,7 +22,7 @@ import com.j256.ormlite.stmt.StatementBuilder.StatementType;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.DatabaseTableConfig;
 
-public class BookingDaoImpl extends BaseDaoImpl<Booking, Integer> implements BookingDao {
+public class BookingDaoImpl extends BaseDaoImpl<Booking, Long> implements BookingDao {
 
 	private ConnectionSource connectionSource;
 

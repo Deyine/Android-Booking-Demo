@@ -4,8 +4,8 @@ import java.sql.SQLException;
 
 import org.pullrequest.android.bookingnative.C;
 import org.pullrequest.android.bookingnative.R;
-import org.pullrequest.android.bookingnative.domain.dao.HotelDao;
 import org.pullrequest.android.bookingnative.domain.model.Hotel.Hotels;
+import org.pullrequest.android.bookingnative.domain.service.HotelService;
 import org.pullrequest.android.bookingnative.network.BookingRestApi;
 import org.pullrequest.android.bookingnative.network.HotelList;
 import org.springframework.http.converter.json.GsonHttpMessageConverter;
@@ -22,9 +22,9 @@ import android.view.Menu;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.google.inject.Inject;
 import com.googlecode.androidannotations.annotations.AfterViews;
 import com.googlecode.androidannotations.annotations.Background;
+import com.googlecode.androidannotations.annotations.Bean;
 import com.googlecode.androidannotations.annotations.EActivity;
 import com.googlecode.androidannotations.annotations.OptionsItem;
 import com.googlecode.androidannotations.annotations.OptionsMenu;
@@ -36,8 +36,8 @@ import com.googlecode.androidannotations.annotations.rest.RestService;
 @OptionsMenu(R.menu.hotels)
 public class HotelsList extends SearchableActivity {
 
-	@Inject
-	private HotelDao hotelDao;
+	@Bean
+	HotelService hotelService;
 
 	private Cursor hotelCursor;
 
@@ -110,7 +110,7 @@ public class HotelsList extends SearchableActivity {
 		String status = "ko";
 		try {
 			HotelList hotels = bookingRestApi.getHotels();
-			hotelDao.updateList(hotels);
+			hotelService.getDao().updateList(hotels);
 			status = "ok";
 		} catch (Exception e) {
 			Log.e(C.LOG_TAG, "Problem during hotels update", e);
@@ -136,7 +136,7 @@ public class HotelsList extends SearchableActivity {
 	@Background
 	public void getHotels() {
 		try {
-			hotelCursor = hotelDao.findAll();
+			hotelCursor = hotelService.getDao().findAll();
 			startManagingCursor(hotelCursor);
 		} catch (SQLException e) {
 			Log.e(C.LOG_TAG, "Problem during hotel list retrieval", e);

@@ -10,7 +10,7 @@ import android.database.Cursor;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.support.ConnectionSource;
 
-public interface BookingDao extends Dao<Booking, Integer> {
+public interface BookingDao extends Dao<Booking, Long> {
 
 	ConnectionSource getConnectionSource();
 	

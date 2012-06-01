@@ -7,19 +7,20 @@ import java.util.Map;
 import org.pullrequest.android.bookingnative.BookingPrefs_;
 import org.pullrequest.android.bookingnative.C;
 import org.pullrequest.android.bookingnative.R;
-import org.pullrequest.android.bookingnative.domain.dao.UserDao;
 import org.pullrequest.android.bookingnative.domain.model.User;
-import org.pullrequest.android.bookingnative.domain.service.BookingService;
+import org.pullrequest.android.bookingnative.domain.service.AppService;
+import org.pullrequest.android.bookingnative.domain.service.UserService;
+import org.pullrequest.android.bookingnative.domain.service.impl.AppServiceImpl;
 
-import roboguice.activity.RoboActivity;
+import android.app.Activity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.inject.Inject;
 import com.googlecode.androidannotations.annotations.Background;
+import com.googlecode.androidannotations.annotations.Bean;
 import com.googlecode.androidannotations.annotations.Click;
 import com.googlecode.androidannotations.annotations.EActivity;
 import com.googlecode.androidannotations.annotations.NoTitle;
@@ -32,16 +33,16 @@ import com.googlecode.androidannotations.annotations.sharedpreferences.Pref;
 @EActivity(R.layout.login)
 @OptionsMenu(R.menu.debug)
 @NoTitle
-public class Login extends RoboActivity {
+public class Login extends Activity {
 
 	@Pref
 	BookingPrefs_ prefs;
 	
-	@Inject
-	private UserDao userDao;
+	@Bean
+	UserService userService;
 
-	@Inject
-	private BookingService bookingService;
+	@Bean(AppServiceImpl.class)
+	AppService appService;
 
 	@ViewById(R.id.loginButton)
 	Button loginButton;
@@ -62,7 +63,7 @@ public class Login extends RoboActivity {
 		Map<String, String> loginParams = new HashMap<String, String>();
 		loginParams.put("login", login);
 		loginParams.put("password", password);
-		loginResult(userDao.findByLogin(login));
+		loginResult(userService.getDao().findByLogin(login));
 	}
 
 	@UiThread
@@ -88,7 +89,7 @@ public class Login extends RoboActivity {
 		demoUser.setFirstName("John");
 		demoUser.setLastName("Travis");
 		try {
-			userDao.create(demoUser);
+			userService.getDao().create(demoUser);
 		} catch (SQLException e) {
 			Log.w(C.LOG_TAG, "Problem during demo user creation", e);
 		}
@@ -97,6 +98,6 @@ public class Login extends RoboActivity {
 	@OptionsItem(R.id.menu_reset)
 	@Background
 	public void resetDb() {
-		bookingService.resetDatabase();
+		appService.resetDatabase();
 	}
 }

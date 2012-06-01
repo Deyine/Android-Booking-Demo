@@ -12,7 +12,7 @@ import android.database.Cursor;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.support.ConnectionSource;
 
-public interface HotelDao extends Dao<Hotel, Integer> {
+public interface HotelDao extends Dao<Hotel, Long> {
 
 	ConnectionSource getConnectionSource();
 	

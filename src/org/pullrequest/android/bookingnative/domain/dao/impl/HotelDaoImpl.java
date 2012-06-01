@@ -20,7 +20,7 @@ import com.j256.ormlite.stmt.StatementBuilder.StatementType;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.DatabaseTableConfig;
 
-public class HotelDaoImpl extends BaseDaoImpl<Hotel, Integer> implements HotelDao {
+public class HotelDaoImpl extends BaseDaoImpl<Hotel, Long> implements HotelDao {
 
 	private ConnectionSource connectionSource;
 
@@ -52,7 +52,7 @@ public class HotelDaoImpl extends BaseDaoImpl<Hotel, Integer> implements HotelDa
 			for (int i = 0; i < hotels.length(); i++) {
 				JSONObject jsonHotel = hotels.getJSONObject(i);
 				Hotel hotel = convertFromJson(jsonHotel);
-				if(this.queryForId((int) hotel.getId()) != null) {
+				if(this.queryForId(hotel.getId()) != null) {
 					this.update(hotel);
 				}
 				else {
@@ -73,7 +73,7 @@ public class HotelDaoImpl extends BaseDaoImpl<Hotel, Integer> implements HotelDa
 	public boolean updateList(List<Hotel> hotels) {
 		try {
 			for(Hotel hotel : hotels) {
-				if(this.queryForId((int) hotel.getId()) != null) {
+				if(this.queryForId(hotel.getId()) != null) {
 					this.update(hotel);
 				}
 				else {

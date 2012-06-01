@@ -16,7 +16,7 @@ import com.j256.ormlite.dao.BaseDaoImpl;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.DatabaseTableConfig;
 
-public class UserDaoImpl extends BaseDaoImpl<User, Integer> implements UserDao {
+public class UserDaoImpl extends BaseDaoImpl<User, Long> implements UserDao {
 
 	private ConnectionSource connectionSource;
 

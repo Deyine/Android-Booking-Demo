@@ -3,21 +3,24 @@ package org.pullrequest.android.bookingnative.activity;
 import java.sql.SQLException;
 
 import org.pullrequest.android.bookingnative.BookingPrefs_;
+import org.pullrequest.android.bookingnative.C;
 import org.pullrequest.android.bookingnative.R;
-import org.pullrequest.android.bookingnative.domain.dao.UserDao;
 import org.pullrequest.android.bookingnative.domain.model.Booking;
 import org.pullrequest.android.bookingnative.domain.model.User;
+import org.pullrequest.android.bookingnative.domain.service.UserService;
 
-import roboguice.util.Ln;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
+import android.os.Debug;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.google.inject.Inject;
 import com.googlecode.androidannotations.annotations.AfterViews;
 import com.googlecode.androidannotations.annotations.Background;
+import com.googlecode.androidannotations.annotations.Bean;
 import com.googlecode.androidannotations.annotations.Click;
 import com.googlecode.androidannotations.annotations.EActivity;
 import com.googlecode.androidannotations.annotations.OptionsItem;
@@ -35,8 +38,8 @@ public class MyBookings extends SearchableActivity {
 	@Pref
 	BookingPrefs_ prefs;
 
-	@Inject
-	private UserDao userDao;
+	@Bean
+	UserService userService;
 	
 	@ViewById(R.id.buttonHotels)
 	Button hotelsButton;
@@ -53,6 +56,12 @@ public class MyBookings extends SearchableActivity {
 	}
 
 	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		Debug.startMethodTracing("startv5");
+		super.onCreate(savedInstanceState);
+	}
+
+	@Override
 	protected void onResume() {
 		if (prefs.loggedUserId().get() == -1L) {
 			// show login activity
@@ -61,6 +70,7 @@ public class MyBookings extends SearchableActivity {
 			displayBookings();
 		}
 		super.onResume();
+		Debug.stopMethodTracing();
 	}
 
 	@OptionsItem(R.id.menu_search)
@@ -89,7 +99,7 @@ public class MyBookings extends SearchableActivity {
 		ListView bookingList = (ListView) findViewById(R.id.bookingList);
 		try {
 			long userId = prefs.loggedUserId().get();
-			User user = userDao.queryForId((int) userId);
+			User user = userService.getDao().queryForId(userId);
 			if (user != null) {
 				ForeignCollection<Booking> bookings = user.getBookings();
 				if (bookings != null) {
@@ -113,13 +123,13 @@ public class MyBookings extends SearchableActivity {
 			for(int i=0; i<nb; i++) {
 				User user = new User(100 + i);
 				user.setLogin("user" + i);
-				userDao.create(user);
+				userService.getDao().create(user);
 			}
 			time = System.currentTimeMillis() - start;
-			Ln.i("Time for " + nb + " insertions : " + time);
+			Log.i(C.LOG_TAG, "Time for " + nb + " insertions : " + time);
 			displayToast("Time for " + nb + " insertions : " + time);
 		} catch (SQLException e) {
-			Ln.w(e);
+			Log.w(C.LOG_TAG, e);
 		}
 	}
 	

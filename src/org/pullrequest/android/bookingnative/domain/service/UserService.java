@@ -1,7 +1,7 @@
 package org.pullrequest.android.bookingnative.domain.service;
 
-import org.pullrequest.android.bookingnative.domain.dao.BookingDao;
-import org.pullrequest.android.bookingnative.domain.model.Booking;
+import org.pullrequest.android.bookingnative.domain.dao.UserDao;
+import org.pullrequest.android.bookingnative.domain.model.User;
 
 import android.content.Context;
 
@@ -11,22 +11,22 @@ import com.googlecode.androidannotations.annotations.RootContext;
 import com.googlecode.androidannotations.api.Scope;
 
 @EBean(scope = Scope.Singleton)
-public class BookingService extends Service<Booking> {
+public class UserService extends Service<User> {
 
 	@RootContext
 	Context context;
 
-	public BookingService() {
+	public UserService() {
 		
 	}
 	
 	@AfterInject
 	public void setDao() {
-		this.setDao(context, Booking.class);
+		this.setDao(context, User.class);
 	}
 
 	@Override
-	public BookingDao getDao() {
-		return (BookingDao) this.dao;
+	public UserDao getDao() {
+		return (UserDao) this.dao;
 	}
 }

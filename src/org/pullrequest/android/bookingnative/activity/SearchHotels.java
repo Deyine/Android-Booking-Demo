@@ -5,8 +5,8 @@ import java.sql.SQLException;
 import org.pullrequest.android.bookingnative.C;
 import org.pullrequest.android.bookingnative.R;
 import org.pullrequest.android.bookingnative.actionbar.ActionBarActivity;
-import org.pullrequest.android.bookingnative.domain.dao.HotelDao;
 import org.pullrequest.android.bookingnative.domain.model.Hotel.Hotels;
+import org.pullrequest.android.bookingnative.domain.service.HotelService;
 
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
@@ -18,16 +18,16 @@ import android.util.Log;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.google.inject.Inject;
 import com.googlecode.androidannotations.annotations.AfterViews;
+import com.googlecode.androidannotations.annotations.Bean;
 import com.googlecode.androidannotations.annotations.EActivity;
 import com.googlecode.androidannotations.annotations.OptionsItem;
 
 @EActivity(R.layout.hotels)
 public class SearchHotels extends ActionBarActivity {
 
-	@Inject
-	private HotelDao hotelDao;
+	@Bean
+	HotelService hotelService;
 
 	@AfterViews
 	@SuppressLint("NewApi")
@@ -57,7 +57,7 @@ public class SearchHotels extends ActionBarActivity {
 
 			ListView hotelList = (ListView) findViewById(R.id.hotelList);
 			try {
-				Cursor hotelCursor = hotelDao.search(query);
+				Cursor hotelCursor = hotelService.getDao().search(query);
 				startManagingCursor(hotelCursor);
 				hotelList.setAdapter(new HotelListAdapter(this, R.layout.hotel_item, hotelCursor, new String[] { Hotels.NAME, Hotels.ADDRESS, Hotels.CITY, Hotels.ZIP }, new int[] { R.id.name, R.id.address, R.id.city, R.id.zip }));
 			} catch (SQLException e) {

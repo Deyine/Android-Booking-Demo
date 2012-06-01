@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Booking v4</string>
+    <string name="app_name">Booking v5</string>
     
     <string name="login">Login name</string>
     <string name="password">Password</string>
