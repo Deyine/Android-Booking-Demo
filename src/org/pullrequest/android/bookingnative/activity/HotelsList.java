@@ -1,15 +1,15 @@
 package org.pullrequest.android.bookingnative.activity;
 
-import java.net.URI;
 import java.sql.SQLException;
 
-import org.json.JSONArray;
 import org.pullrequest.android.bookingnative.C;
 import org.pullrequest.android.bookingnative.R;
 import org.pullrequest.android.bookingnative.domain.dao.HotelDao;
 import org.pullrequest.android.bookingnative.domain.model.Hotel.Hotels;
-import org.pullrequest.android.bookingnative.network.RequestService;
-import org.pullrequest.android.bookingnative.network.Response;
+import org.pullrequest.android.bookingnative.network.BookingRestApi;
+import org.pullrequest.android.bookingnative.network.HotelList;
+import org.springframework.http.converter.json.GsonHttpMessageConverter;
+import org.springframework.web.client.RestTemplate;
 
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
@@ -30,6 +30,7 @@ import com.googlecode.androidannotations.annotations.OptionsItem;
 import com.googlecode.androidannotations.annotations.OptionsMenu;
 import com.googlecode.androidannotations.annotations.UiThread;
 import com.googlecode.androidannotations.annotations.ViewById;
+import com.googlecode.androidannotations.annotations.rest.RestService;
 
 @EActivity(R.layout.hotels)
 @OptionsMenu(R.menu.hotels)
@@ -43,14 +44,22 @@ public class HotelsList extends SearchableActivity {
 	@ViewById
 	ListView hotelList;
 
+	@RestService
+	BookingRestApi bookingRestApi;
+	
 	@AfterViews
 	@SuppressLint("NewApi")
 	public void init() {
+		// add GsonMessageConverter to resttemplate
+		RestTemplate restTemplate = new RestTemplate();
+	    restTemplate.getMessageConverters().add(new GsonHttpMessageConverter());
+		bookingRestApi.setRestTemplate(restTemplate);
+
 		// get hotels list
 		hotelList.setEmptyView(findViewById(R.id.hotels_empty));
 		hotelList.setAdapter(null);
 		getHotels();
-		
+
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 			ActionBar actionBar = getActionBar();
 			actionBar.setDisplayHomeAsUpEnabled(true);
@@ -99,17 +108,10 @@ public class HotelsList extends SearchableActivity {
 	public void getRemoteHotels() {
 		setRefreshItemState(true);
 		String status = "ko";
-		Response hotelsResponse = null;
 		try {
-			hotelsResponse = RequestService.getInstance().get(new URI(C.SERVER_URL + "/api/hotels"));
-			if ((hotelsResponse != null) && (hotelsResponse.getCode() == 200)) {
-				JSONArray jsonHotels = new JSONArray(hotelsResponse.getJsonData());
-				if (!hotelDao.updateList(jsonHotels)) {
-					status = "ko";
-				} else {
-					status = "ok";
-				}
-			}
+			HotelList hotels = bookingRestApi.getHotels();
+			hotelDao.updateList(hotels);
+			status = "ok";
 		} catch (Exception e) {
 			Log.e(C.LOG_TAG, "Problem during hotels update", e);
 		}

@@ -1,6 +1,7 @@
 package org.pullrequest.android.bookingnative.domain.dao.impl;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -68,6 +69,24 @@ public class HotelDaoImpl extends BaseDaoImpl<Hotel, Integer> implements HotelDa
 		return true;
 	}
 
+	@Override
+	public boolean updateList(List<Hotel> hotels) {
+		try {
+			for(Hotel hotel : hotels) {
+				if(this.queryForId((int) hotel.getId()) != null) {
+					this.update(hotel);
+				}
+				else {
+					this.create(hotel);
+				}
+			}
+		} catch (SQLException e) {
+			Log.e(C.LOG_TAG, "Problem during hotels sql persisting", e);
+			return false;
+		}
+		return true;
+	}
+	
 	private Hotel convertFromJson(JSONObject json) throws JSONException {
 		Hotel hotel = new Hotel();
 		if (!json.isNull(Hotels.ID)) {

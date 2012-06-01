@@ -1,6 +1,7 @@
 package org.pullrequest.android.bookingnative.domain.dao;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -18,6 +19,8 @@ public interface HotelDao extends Dao<Hotel, Integer> {
 	Hotel create(JSONObject json);
 	
 	boolean updateList(JSONArray hotels);
+
+	boolean updateList(List<Hotel> hotels);
 	
 	Cursor findAll() throws SQLException;
 	
